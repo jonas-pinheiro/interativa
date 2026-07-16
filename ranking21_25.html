@@ -375,7 +375,7 @@ section.tight{padding:44px 32px}
 /* ============================================================
    STABILITY TABLE
    ============================================================ */
-.stability-wrap{background:#fff;border:1px solid var(--line);padding:28px 30px}
+.stability-wrap{background:#fff;border:1px solid var(--line);padding:28px 30px;overflow-x:auto}
 table.stability{width:100%;border-collapse:collapse;font-size:.93rem}
 table.stability th{
   text-align:left;
@@ -387,13 +387,9 @@ table.stability th{
   color:var(--muted);
   font-weight:700;
 }
-table.stability th:nth-child(3),
-table.stability th:nth-child(4),
-table.stability th:nth-child(5){text-align:right}
+table.stability th:not(:first-child):not(:nth-child(2)){text-align:right}
 table.stability td{padding:14px;border-bottom:1px solid var(--line);vertical-align:middle}
-table.stability td:nth-child(3),
-table.stability td:nth-child(4),
-table.stability td:nth-child(5){
+table.stability td:not(:first-child):not(:nth-child(2)){
   text-align:right;
   font-family:'Fraunces',serif;
   font-variant-numeric:tabular-nums;
@@ -403,6 +399,7 @@ table.stability tr:last-child td{border-bottom:none}
 table.stability tr.hl td{background:var(--highlight);font-weight:600}
 table.stability tr.hl td:first-child{color:var(--gold);font-weight:700}
 .st-pos{font-family:'Fraunces',serif;font-weight:500;color:var(--ink);width:28px}
+.st-avg{font-weight:700;color:var(--gold-warm)}
 .st-var{font-weight:600}
 .st-var-bar{
   display:inline-block;
@@ -556,11 +553,11 @@ table.stability tr.hl td:first-child{color:var(--gold);font-weight:700}
     </div>
 
     <div class="slope-wrap fade-in">
-      <svg id="slopeChart" viewBox="0 0 900 560" preserveAspectRatio="xMidYMid meet" class="slope-chart"></svg>
+      <svg id="slopeChart" viewBox="0 0 900 640" preserveAspectRatio="xMidYMid meet" class="slope-chart"></svg>
       <div class="slope-legend">
         <div class="slope-legend-item"><span class="legend-line"></span>Interativa</div>
         <div class="slope-legend-item"><span class="legend-line gray"></span>Outras escolas do top 10</div>
-        <div class="slope-legend-item"><span class="legend-dot hollow"></span>Fora do top 10 naquele ano</div>
+        <div class="slope-legend-item"><span class="legend-dot hollow"></span>Não apareceu no ranking naquele ano (ver faixa "fora" abaixo do gráfico)</div>
       </div>
     </div>
 
@@ -691,6 +688,67 @@ table.stability tr.hl td:first-child{color:var(--gold);font-weight:700}
           <div class="red-bars" id="redBars2025"></div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     REDAÇÃO SLOPE CHART
+     ============================================================ -->
+<section>
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-num serif">V. A trajetória, em redação</div>
+      <h2 class="sec-title serif">Cinco anos de redação em Londrina — com um nome sempre lá dentro.</h2>
+      <p class="sec-dek">Cada linha representa a trajetória de uma escola em redação entre 2021 e 2025. O corte de dados disponível muda ao longo do período: top 10 em 2021–2023, e apenas top 5 em 2024–2025. Por isso, escolas fora da lista em 2024 ou 2025 podem estar entre 6º e 10º lugar, não necessariamente fora do top 10 — a faixa "fora" indica apenas que não constam no dado disponível para aquele ano. Já para a Interativa (linha dourada), a posição é conhecida em todos os cinco anos.</p>
+    </div>
+
+    <div class="slope-wrap fade-in">
+      <svg id="slopeChartRedacao" viewBox="0 0 900 640" preserveAspectRatio="xMidYMid meet" class="slope-chart"></svg>
+      <div class="slope-legend">
+        <div class="slope-legend-item"><span class="legend-line"></span>Interativa</div>
+        <div class="slope-legend-item"><span class="legend-line gray"></span>Outras escolas no ranking de redação</div>
+        <div class="slope-legend-item"><span class="legend-dot hollow"></span>Fora do dado disponível naquele ano (ver faixa "fora" abaixo do gráfico)</div>
+      </div>
+    </div>
+
+    <div class="insight-strip fade-in">
+      <div class="insight-cell">
+        <div class="insight-cell-num gold serif">2,8</div>
+        <div class="insight-cell-desc"><strong>posição média da Interativa em redação</strong> entre 2021 e 2025 — variando de #1 (2023 e 2025) a #7 (2022).</div>
+      </div>
+      <div class="insight-cell">
+        <div class="insight-cell-num stable serif">1</div>
+        <div class="insight-cell-desc"><strong>única escola de Londrina</strong> presente no ranking de redação em todas as cinco edições analisadas: a Interativa.</div>
+      </div>
+      <div class="insight-cell">
+        <div class="insight-cell-num serif">2<small>/5</small></div>
+        <div class="insight-cell-desc"><strong>edições em que a Interativa liderou</strong> a redação de Londrina (2023 e 2025).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ÍNDICE DE ESTABILIDADE — GERAL E REDAÇÃO (com média de posição)
+     ============================================================ -->
+<section>
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-num serif">VI. Consistência em números</div>
+      <h2 class="sec-title serif">A posição média de cada colégio, ano após ano</h2>
+      <p class="sec-dek">Média simples da posição no ranking, calculada apenas sobre os anos em que a escola aparece no dado disponível (colunas "fora" não entram na conta). Quanto menor a média, melhor a colocação histórica.</p>
+    </div>
+
+    <h3 class="serif" style="font-size:1.15rem;margin-bottom:14px;color:var(--ink)">Ranking geral</h3>
+    <div class="stability-wrap fade-in" style="margin-bottom:48px">
+      <table class="stability" id="stabilityTable"></table>
+    </div>
+
+    <h3 class="serif" style="font-size:1.15rem;margin-bottom:14px;color:var(--ink)">Redação</h3>
+    <p style="font-size:.82rem;color:var(--ink-soft);margin-bottom:14px;max-width:70ch">Lembrando: para 2024 e 2025 só há dado de top 5 disponível, então a média de escolas que só aparecem nesses anos tende a ser artificialmente baixa (só entram na conta os anos em que elas já estavam entre as 5 melhores). A Interativa é a única com histórico completo nos cinco anos, o que torna sua média diretamente comparável ao longo de todo o período.</p>
+    <div class="stability-wrap fade-in">
+      <table class="stability" id="stabilityTableRedacao"></table>
     </div>
   </div>
 </section>
@@ -883,8 +941,9 @@ function shortName(n){
 // ============================================================
 // SLOPE CHART (big one)
 // ============================================================
-function drawSlopeChart(svgId, opts) {
+function drawSlopeChart(svgId, opts, yearsData) {
   const svg = document.getElementById(svgId);
+  yearsData = yearsData || ANOS_DADOS.map(yr => ({ano: yr.ano, list: yr.geral}));
   const W = opts.W || 900, H = opts.H || 560;
   const ml = opts.ml || 180, mr = opts.mr || 180;
   const mt = opts.mt || 60, mb = opts.mb || 40;
@@ -894,16 +953,21 @@ function drawSlopeChart(svgId, opts) {
   const showGrid = opts.showGrid !== false;
   const compact = opts.compact || false;
   const fontSize = opts.fontSize || 11;
+  // Distâncias separadas: escala numérica (#1/#5/#10) fica colada ao gráfico;
+  // nomes dos colégios ficam mais afastados, para não se sobreporem.
+  const AXIS_OFF = 10;
+  const NAME_OFF = 42;
 
-  const numAnos = ANOS_DADOS.length;
+  const numAnos = yearsData.length;
   const xStep = numAnos > 1 ? chartW / (numAnos - 1) : chartW;
   const maxPos = 10;
   const yScale = pos => mt + ((pos - 1) / (maxPos - 1)) * chartH;
+  const yOut = mt + chartH + 40; // faixa "fora do ranking"
 
   // Coletar todas as escolas com suas posições por ano
   const allSchools = new Map();
-  ANOS_DADOS.forEach((yr, idx) => {
-    yr.geral.forEach((row, i) => {
+  yearsData.forEach((yr, idx) => {
+    yr.list.forEach((row, i) => {
       const key = normalize(row.nome);
       if (!allSchools.has(key)) {
         allSchools.set(key, {nome:row.nome, points:[], hl:row.hl});
@@ -932,10 +996,17 @@ function drawSlopeChart(svgId, opts) {
       const y = yScale(i);
       out += `<line class="slope-grid-line" x1="${ml}" y1="${y}" x2="${ml+chartW}" y2="${y}"/>`;
       if (i === 1 || i === 5 || i === 10) {
-        out += `<text class="slope-axis-label" x="${ml - 14}" y="${y+4}" text-anchor="end">#${i}</text>`;
-        out += `<text class="slope-axis-label" x="${ml+chartW+14}" y="${y+4}" text-anchor="start">#${i}</text>`;
+        out += `<text class="slope-axis-label" x="${ml - AXIS_OFF}" y="${y+4}" text-anchor="end">#${i}</text>`;
+        out += `<text class="slope-axis-label" x="${ml+chartW+AXIS_OFF}" y="${y+4}" text-anchor="start">#${i}</text>`;
       }
     }
+  }
+
+  // Faixa "fora do ranking" (só no gráfico grande, não no mini)
+  if (!compact) {
+    out += `<line x1="${ml}" y1="${yOut}" x2="${ml+chartW}" y2="${yOut}" stroke-dasharray="3,4" style="stroke:var(--gray-line);stroke-width:1"/>`;
+    out += `<text class="slope-axis-label" x="${ml - AXIS_OFF}" y="${yOut+4}" text-anchor="end" style="font-size:9.5px">fora</text>`;
+    out += `<text class="slope-axis-label" x="${ml+chartW+AXIS_OFF}" y="${yOut+4}" text-anchor="start" style="font-size:9.5px">fora</text>`;
   }
 
   // Labels dos anos
@@ -943,11 +1014,23 @@ function drawSlopeChart(svgId, opts) {
   const yearY = Math.max(yearFontSize + 4, mt - (compact ? 16 : 26));
   const tickY1 = compact ? mt - 8 : mt - 14;
   const tickY2 = compact ? mt - 3 : mt - 6;
-  ANOS_DADOS.forEach((yr, idx) => {
+  yearsData.forEach((yr, idx) => {
     const x = ml + idx * xStep;
     out += `<text class="slope-year" style="font-size:${yearFontSize}px" x="${x}" y="${yearY}" text-anchor="middle">${yr.ano}</text>`;
     out += `<line x1="${x}" y1="${tickY1}" x2="${x}" y2="${tickY2}" stroke="#0f1e3d" stroke-width="1.5"/>`;
   });
+
+  // Monta o "d" de um path SEM conectar por cima de anos em que a escola não apareceu
+  // (cada lacuna inicia um novo subtraçado, via comando M)
+  function buildPath(points) {
+    let d = '';
+    points.forEach((pt, j) => {
+      const prev = points[j-1];
+      const isGap = prev && (pt.anoIdx - prev.anoIdx > 1);
+      d += (j === 0 || isGap) ? `M ${pt.x} ${pt.y} ` : `L ${pt.x} ${pt.y} `;
+    });
+    return d;
+  }
 
   // Desenhar linhas de "outras escolas" primeiro (para ficarem atrás)
   const others = [], inters = [];
@@ -958,26 +1041,22 @@ function drawSlopeChart(svgId, opts) {
 
   others.forEach((s, i) => {
     if (s.points.length > 1) {
-      const path = s.points.map((pt, j) => `${j === 0 ? 'M' : 'L'} ${pt.x} ${pt.y}`).join(' ');
       const volCls = s.variacao > 4 ? ' volatile' : '';
-      out += `<path class="slope-line other${volCls}" d="${path}"/>`;
+      out += `<path class="slope-line other${volCls}" d="${buildPath(s.points)}"/>`;
     }
     s.points.forEach((pt, j) => {
       const delay = 0.5 + i * 0.03 + j * 0.05;
       out += `<circle class="slope-dot other" cx="${pt.x}" cy="${pt.y}" r="3" style="animation-delay:${delay}s"/>`;
     });
-    // Marcar entrada/saída: se apareceu em menos anos que existem
+    // Marcar ausência: anos em que a escola não apareceu no ranking.
+    // Fica numa faixa própria ("fora"), sem tocar a linha — para não sugerir
+    // que a escola permaneceu no ranking quando na verdade não apareceu.
     if (s.points.length < numAnos) {
-      // Descobrir em quais anos NÃO apareceu
       const anosPresentes = new Set(s.points.map(p => p.anoIdx));
-      ANOS_DADOS.forEach((yr, idx) => {
+      yearsData.forEach((yr, idx) => {
         if (!anosPresentes.has(idx)) {
-          // colocar círculo vazado no gap
           const x = ml + idx * xStep;
-          // aproximar y do vizinho mais próximo, para conectar
-          const nearest = s.points.reduce((best, p) =>
-            (Math.abs(p.anoIdx - idx) < Math.abs(best.anoIdx - idx) ? p : best), s.points[0]);
-          out += `<circle class="slope-dot other-exit" cx="${x}" cy="${nearest.y}" r="5" stroke-dasharray="2,2" style="animation-delay:1.2s"/>`;
+          out += `<circle class="slope-dot other-exit" cx="${x}" cy="${yOut}" r="4" style="animation-delay:1.2s"/>`;
         }
       });
     }
@@ -985,10 +1064,10 @@ function drawSlopeChart(svgId, opts) {
     if (showLabels && !compact) {
       const first = s.points[0], last = s.points[s.points.length - 1];
       if (first.anoIdx === 0) {
-        out += `<text class="slope-label" x="${ml - 14}" y="${first.y+3.5}" text-anchor="end" style="opacity:0;animation:fadedot .4s ease-out ${0.8 + i*0.02}s forwards">${shortName(s.nome)}</text>`;
+        out += `<text class="slope-label" x="${ml - NAME_OFF}" y="${first.y+3.5}" text-anchor="end" style="opacity:0;animation:fadedot .4s ease-out ${0.8 + i*0.02}s forwards">${shortName(s.nome)}</text>`;
       }
       if (last.anoIdx === numAnos - 1) {
-        out += `<text class="slope-label" x="${ml + chartW + 14}" y="${last.y+3.5}" text-anchor="start" style="opacity:0;animation:fadedot .4s ease-out ${0.8 + i*0.02}s forwards">${shortName(s.nome)}</text>`;
+        out += `<text class="slope-label" x="${ml + chartW + NAME_OFF}" y="${last.y+3.5}" text-anchor="start" style="opacity:0;animation:fadedot .4s ease-out ${0.8 + i*0.02}s forwards">${shortName(s.nome)}</text>`;
       }
     }
   });
@@ -996,8 +1075,7 @@ function drawSlopeChart(svgId, opts) {
   // Desenhar Interativa por cima
   inters.forEach(s => {
     if (s.points.length > 1) {
-      const path = s.points.map((pt, j) => `${j === 0 ? 'M' : 'L'} ${pt.x} ${pt.y}`).join(' ');
-      out += `<path class="slope-line inter" d="${path}"/>`;
+      out += `<path class="slope-line inter" d="${buildPath(s.points)}"/>`;
     }
     s.points.forEach((pt, j) => {
       const delay = 2.2 + j * 0.2;
@@ -1009,13 +1087,22 @@ function drawSlopeChart(svgId, opts) {
         out += `<text class="slope-label inter" x="${pt.x}" y="${pt.y - r - 8}" text-anchor="middle" style="opacity:0;animation:fadedot .5s ease-out ${delay + .2}s forwards">#${pt.pos}</text>`;
       }
     });
+    if (s.points.length < numAnos) {
+      const anosPresentes = new Set(s.points.map(p => p.anoIdx));
+      yearsData.forEach((yr, idx) => {
+        if (!anosPresentes.has(idx)) {
+          const x = ml + idx * xStep;
+          out += `<circle class="slope-dot other-exit" cx="${x}" cy="${yOut}" r="4" style="animation-delay:1.2s"/>`;
+        }
+      });
+    }
     if (showLabels && !compact) {
       const first = s.points[0], last = s.points[s.points.length - 1];
       if (first.anoIdx === 0) {
-        out += `<text class="slope-label inter" x="${ml - 14}" y="${first.y+5}" text-anchor="end" style="opacity:0;animation:fadedot .5s ease-out 2.5s forwards">INTERATIVA</text>`;
+        out += `<text class="slope-label inter" x="${ml - NAME_OFF}" y="${first.y+5}" text-anchor="end" style="opacity:0;animation:fadedot .5s ease-out 2.5s forwards">INTERATIVA</text>`;
       }
       if (last.anoIdx === numAnos - 1) {
-        out += `<text class="slope-label inter" x="${ml + chartW + 14}" y="${last.y+5}" text-anchor="start" style="opacity:0;animation:fadedot .5s ease-out 2.5s forwards">INTERATIVA</text>`;
+        out += `<text class="slope-label inter" x="${ml + chartW + NAME_OFF}" y="${last.y+5}" text-anchor="start" style="opacity:0;animation:fadedot .5s ease-out 2.5s forwards">INTERATIVA</text>`;
       }
     }
   });
@@ -1085,17 +1172,16 @@ function renderYearCards() {
 // ============================================================
 // STABILITY TABLE
 // ============================================================
-function renderStabilityTable() {
+function renderStabilityTable(yearsData, tableId) {
   const allSchools = new Map();
-  ANOS_DADOS.forEach(yr => {
-    yr.geral.forEach((row, i) => {
+  yearsData.forEach(yr => {
+    yr.list.forEach((row, i) => {
       const key = normalize(row.nome);
       if (!allSchools.has(key)) {
-        allSchools.set(key, {nome:row.nome, posicoes:{}, notas:{}, hl:row.hl});
+        allSchools.set(key, {nome:row.nome, posicoes:{}, hl:row.hl});
       }
       const s = allSchools.get(key);
       s.posicoes[yr.ano] = i+1;
-      s.notas[yr.ano] = row.geral;
       if (row.hl) s.hl = true;
     });
   });
@@ -1104,26 +1190,27 @@ function renderStabilityTable() {
   allSchools.forEach(s => {
     const pos = Object.values(s.posicoes);
     const variacao = pos.length > 1 ? Math.max(...pos) - Math.min(...pos) : null;
-    const missing = ANOS_DADOS.length - pos.length;
-    rows.push({...s, variacao, missing});
+    const media = pos.reduce((a,b) => a+b, 0) / pos.length;
+    const missing = yearsData.length - pos.length;
+    rows.push({...s, variacao, media, missing});
   });
 
   rows.sort((a,b) => {
     if (a.missing !== b.missing) return a.missing - b.missing;
-    return (a.variacao ?? 999) - (b.variacao ?? 999);
+    return a.media - b.media;
   });
 
-  const tbl = document.getElementById('stabilityTable');
+  const tbl = document.getElementById(tableId);
   let head = `<tr><th></th><th>Escola</th>`;
-  ANOS_DADOS.forEach(yr => head += `<th>${yr.ano}</th>`);
-  head += `<th>Variação</th></tr>`;
+  yearsData.forEach(yr => head += `<th>${yr.ano}</th>`);
+  head += `<th>Média</th><th>Variação</th></tr>`;
 
   const maxVar = Math.max(...rows.map(r => r.variacao ?? 0));
   let body = '';
   rows.forEach((r, i) => {
     const cls = r.hl ? 'hl' : '';
     let cells = '';
-    ANOS_DADOS.forEach(yr => {
+    yearsData.forEach(yr => {
       const p = r.posicoes[yr.ano];
       cells += p ? `<td>#${p}</td>` : `<td style="color:var(--muted)">fora</td>`;
     });
@@ -1135,6 +1222,7 @@ function renderStabilityTable() {
       <td class="st-pos">${i+1}</td>
       <td>${r.nome}${r.hl?' ★':''}</td>
       ${cells}
+      <td class="st-avg">${r.media.toFixed(1)}</td>
       <td>${varText}</td>
     </tr>`;
   });
@@ -1187,10 +1275,16 @@ function setupIntersection() {
 // ============================================================
 // Boot
 // ============================================================
-drawSlopeChart('slopeChart', {W:900, H:560, ml:180, mr:180, mt:60, mb:40});
+const REDACAO_YEARS = Object.keys(REDACAO_DADOS)
+  .map(Number).sort((a,b) => a - b)
+  .map(ano => ({ano, list: REDACAO_DADOS[ano]}));
+
+drawSlopeChart('slopeChart', {W:900, H:640, ml:180, mr:180, mt:60, mb:90});
 drawSlopeChart('miniSlope', {W:400, H:220, ml:60, mr:60, mt:34, mb:20, compact:true, showLabels:false, showGrid:false, fontSize:9});
+drawSlopeChart('slopeChartRedacao', {W:900, H:640, ml:180, mr:180, mt:60, mb:90}, REDACAO_YEARS);
 renderYearCards();
-renderStabilityTable();
+renderStabilityTable(ANOS_DADOS.map(yr => ({ano:yr.ano, list:yr.geral})), 'stabilityTable');
+renderStabilityTable(REDACAO_YEARS, 'stabilityTableRedacao');
 renderRedacaoBars();
 setupIntersection();
 </script>
