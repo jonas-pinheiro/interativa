@@ -411,6 +411,20 @@ table.stability tr.hl td:first-child{color:var(--gold);font-weight:700}
   opacity:.35;
 }
 .hl .st-var-bar{background:var(--gold);opacity:.7}
+table.stability tr.desq{opacity:.55}
+table.stability tr.desq td{font-style:italic}
+.st-desq{
+  font-family:'Inter',sans-serif;
+  font-style:normal;
+  font-size:.68rem;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  color:var(--muted);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:2px 6px;
+  cursor:help;
+}
 
 /* ============================================================
    REDAÇÃO PANEL — with bars
@@ -627,7 +641,7 @@ table.stability tr.hl td:first-child{color:var(--gold);font-weight:700}
     <div class="sec-head">
       <div class="sec-num serif">III. Índice de estabilidade</div>
       <h2 class="sec-title serif">A rotatividade do topo, em números</h2>
-      <p class="sec-dek">Ordenado da menor para a maior variação de posição entre 2021 e 2025, considerando apenas escolas que apareceram no top 10 em pelo menos um dos anos. Escolas marcadas "fora" saíram do top 10 naquele ano.</p>
+      <p class="sec-dek">Ordenado por presença e depois pela média de posição entre 2021 e 2025 — considerando apenas escolas que apareceram no top 10 em pelo menos um dos anos. Escolas marcadas "fora" não constam no ranking daquele ano. A coluna "Média" só é calculada para quem esteve presente nos cinco anos; as demais aparecem como "n/c" (não comparável), mais abaixo na lista.</p>
     </div>
 
     <div class="stability-wrap fade-in">
@@ -735,18 +749,12 @@ table.stability tr.hl td:first-child{color:var(--gold);font-weight:700}
 <section>
   <div class="container">
     <div class="sec-head">
-      <div class="sec-num serif">VI. Consistência em números</div>
-      <h2 class="sec-title serif">A posição média de cada colégio, ano após ano</h2>
-      <p class="sec-dek">Média simples da posição no ranking, calculada apenas sobre os anos em que a escola aparece no dado disponível (colunas "fora" não entram na conta). Quanto menor a média, melhor a colocação histórica.</p>
+      <div class="sec-num serif">VI. Consistência em números — Redação</div>
+      <h2 class="sec-title serif">A posição média de cada colégio em redação</h2>
+      <p class="sec-dek">Mesmo princípio da tabela geral (seção III), aplicado à redação: a coluna "Média" só é calculada — e só entra no ranking — para colégios presentes em <strong>todas as edições analisadas</strong>. Quem ficou fora em algum ano aparece como <strong>"n/c"</strong> (não comparável) e em itálico, mais abaixo na lista, para não sugerir uma consistência que os dados não sustentam.</p>
     </div>
 
-    <h3 class="serif" style="font-size:1.15rem;margin-bottom:14px;color:var(--ink)">Ranking geral</h3>
-    <div class="stability-wrap fade-in" style="margin-bottom:48px">
-      <table class="stability" id="stabilityTable"></table>
-    </div>
-
-    <h3 class="serif" style="font-size:1.15rem;margin-bottom:14px;color:var(--ink)">Redação</h3>
-    <p style="font-size:.82rem;color:var(--ink-soft);margin-bottom:14px;max-width:70ch">Lembrando: para 2024 e 2025 só há dado de top 5 disponível, então a média de escolas que só aparecem nesses anos tende a ser artificialmente baixa (só entram na conta os anos em que elas já estavam entre as 5 melhores). A Interativa é a única com histórico completo nos cinco anos, o que torna sua média diretamente comparável ao longo de todo o período.</p>
+    <p style="font-size:.82rem;color:var(--ink-soft);margin-bottom:14px;max-width:70ch">Some ainda o corte de dados: 2021–2023 é top 10, 2024–2025 é top 5. Por isso, a maioria das escolas tem ao menos um ano "fora" e cai na faixa "n/c" — a Interativa é a única com histórico completo nos cinco anos, o que a coloca sozinha no topo de uma comparação justa.</p>
     <div class="stability-wrap fade-in">
       <table class="stability" id="stabilityTableRedacao"></table>
     </div>
@@ -1197,7 +1205,8 @@ function renderStabilityTable(yearsData, tableId) {
 
   rows.sort((a,b) => {
     if (a.missing !== b.missing) return a.missing - b.missing;
-    return a.media - b.media;
+    if (a.missing === 0) return a.media - b.media; // só compara média entre quem tem histórico completo
+    return (a.variacao ?? 99) - (b.variacao ?? 99);
   });
 
   const tbl = document.getElementById(tableId);
@@ -1205,9 +1214,11 @@ function renderStabilityTable(yearsData, tableId) {
   yearsData.forEach(yr => head += `<th>${yr.ano}</th>`);
   head += `<th>Média</th><th>Variação</th></tr>`;
 
+  const completas = rows.filter(r => r.missing === 0);
   const maxVar = Math.max(...rows.map(r => r.variacao ?? 0));
   let body = '';
-  rows.forEach((r, i) => {
+  let rankAtual = 0;
+  rows.forEach((r) => {
     const cls = r.hl ? 'hl' : '';
     let cells = '';
     yearsData.forEach(yr => {
@@ -1218,11 +1229,19 @@ function renderStabilityTable(yearsData, tableId) {
     const varText = r.variacao !== null
       ? `<span class="st-var-bar" style="width:${barW}px"></span><span class="st-var">${r.variacao}</span>`
       : '—';
-    body += `<tr class="${cls}">
-      <td class="st-pos">${i+1}</td>
+    // Só recebe posição no ranking e média numérica quem tem histórico completo
+    // (esteve no ranking em todos os anos). Quem faltou em algum ano fica
+    // "desclassificado" da comparação de média — mostrar o número seria
+    // enganoso, já que a média incompleta tende a refletir só os anos bons.
+    const rankCell = r.missing === 0 ? `${++rankAtual}` : '—';
+    const mediaCell = r.missing === 0
+      ? r.media.toFixed(1)
+      : `<span class="st-desq" title="Não entra na comparação: ficou fora do ranking em ${r.missing} ano(s)">n/c</span>`;
+    body += `<tr class="${cls}${r.missing>0?' desq':''}">
+      <td class="st-pos">${rankCell}</td>
       <td>${r.nome}${r.hl?' ★':''}</td>
       ${cells}
-      <td class="st-avg">${r.media.toFixed(1)}</td>
+      <td class="st-avg">${mediaCell}</td>
       <td>${varText}</td>
     </tr>`;
   });
