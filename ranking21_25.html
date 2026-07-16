@@ -939,10 +939,14 @@ function drawSlopeChart(svgId, opts) {
   }
 
   // Labels dos anos
+  const yearFontSize = compact ? 12 : 20;
+  const yearY = Math.max(yearFontSize + 4, mt - (compact ? 16 : 26));
+  const tickY1 = compact ? mt - 8 : mt - 14;
+  const tickY2 = compact ? mt - 3 : mt - 6;
   ANOS_DADOS.forEach((yr, idx) => {
     const x = ml + idx * xStep;
-    out += `<text class="slope-year" x="${x}" y="${mt - 26}" text-anchor="middle">${yr.ano}</text>`;
-    out += `<line x1="${x}" y1="${mt-14}" x2="${x}" y2="${mt-6}" stroke="#0f1e3d" stroke-width="1.5"/>`;
+    out += `<text class="slope-year" style="font-size:${yearFontSize}px" x="${x}" y="${yearY}" text-anchor="middle">${yr.ano}</text>`;
+    out += `<line x1="${x}" y1="${tickY1}" x2="${x}" y2="${tickY2}" stroke="#0f1e3d" stroke-width="1.5"/>`;
   });
 
   // Desenhar linhas de "outras escolas" primeiro (para ficarem atrás)
