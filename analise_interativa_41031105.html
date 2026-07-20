@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Análise ENEM — Interativa Londrina 41031105</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--az:#1a3a6b;--az2:#2255a4;--vd:#1a7a4a;--am:#f5a623;--vm:#c0392b;--lr:#e65100;--bg:#f4f6fa;--bd:#dde2ee;--tx:#1e2a3a;--sh:0 2px 14px rgba(26,58,107,.10)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+header{background:linear-gradient(135deg,var(--az),var(--az2));color:#fff;padding:20px 32px}
+.enome{font-size:1.4rem;font-weight:800;margin-bottom:3px}
+.esub{font-size:.85rem;opacity:.75}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.badge{padding:4px 13px;border-radius:20px;font-size:.78rem;font-weight:700;background:rgba(255,255,255,.18)}
+.badge.yw{background:rgba(245,166,35,.3);border:1px solid rgba(245,166,35,.5)}
+.aviso{background:#fffbeb;border-bottom:2px solid #fcd34d;padding:9px 32px;font-size:.81rem;color:#92400e;display:flex;gap:8px;align-items:center}
+/* Tab bar */
+.tabbar{background:#fff;border-bottom:2px solid var(--bd);padding:10px 32px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tabbar .lbl{font-size:.74rem;font-weight:700;color:#5a6a82;text-transform:uppercase;margin-right:4px}
+.tbtn{padding:6px 18px;border:2px solid var(--bd);border-radius:20px;font-size:.88rem;font-weight:700;cursor:pointer;color:#5a6a82;background:#fff;transition:all .18s}
+.tbtn.on{background:var(--az);border-color:var(--az);color:#fff}
+.tbtn.sm{padding:5px 14px;font-size:.82rem}
+/* Layout */
+.wrap{max-width:1200px;margin:0 auto;padding:20px 28px}
+.card{background:#fff;border-radius:14px;padding:20px 22px;margin-bottom:18px;box-shadow:var(--sh)}
+h2{font-size:1rem;font-weight:700;color:var(--az);margin-bottom:13px;display:flex;align-items:center;gap:8px}
+h2::before{content:'';display:inline-block;width:4px;height:16px;background:var(--am);border-radius:2px}
+/* KPIs */
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:#fff;border-radius:11px;padding:13px 15px;box-shadow:var(--sh);border-left:4px solid var(--az)}
+.kpi .lb{font-size:.68rem;font-weight:700;color:#5a6a82;text-transform:uppercase;letter-spacing:.4px}
+.kpi .vl{font-size:1.65rem;font-weight:800;margin:3px 0;color:var(--az)}
+.kpi .dl{font-size:.74rem}
+.kpi.vd{border-left-color:var(--vd)}.kpi.vd .vl{color:var(--vd)}
+.kpi.lr{border-left-color:var(--lr)}.kpi.lr .vl{color:var(--lr)}
+.kpi.vm{border-left-color:var(--vm)}.kpi.vm .vl{color:var(--vm)}
+.kpi.yw{border-left-color:var(--am)}.kpi.yw .vl{color:#b45309}
+.up{color:var(--vd)}.dn{color:var(--vm)}
+/* 2-col */
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+@media(max-width:720px){.col2{grid-template-columns:1fr}}
+.ch{position:relative;height:265px}.chh{position:relative;height:350px}
+/* Tabela genérica */
+.gt{width:100%;border-collapse:collapse;font-size:.83rem}
+.gt th{padding:9px 10px;text-align:center;background:var(--az);color:#fff;font-size:.75rem;font-weight:600;white-space:nowrap}
+.gt th:nth-child(2){text-align:left}
+.gt td{padding:7px 10px;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap}
+.gt td:nth-child(2){text-align:left;max-width:190px;overflow:hidden;text-overflow:ellipsis}
+.gt tr:last-child td{border-bottom:none}
+.gt tr.hl td{background:#eef3ff;font-weight:700}
+.gt tr.hl td:nth-child(2){color:var(--az)}
+.ml{color:#15803d;font-weight:700}.fr{color:#dc2626}
+/* Tipo badge */
+.tb{display:inline-block;padding:2px 7px;border-radius:10px;font-size:.7rem;font-weight:700}
+.tp{background:#fce7f3;color:#9d174d}.te{background:#dcfce7;color:#166534}.tf{background:#dbeafe;color:#1e40af}
+/* Avatar */
+.av{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.74rem;flex-shrink:0;letter-spacing:-.5px}
+.erow{display:flex;align-items:center;gap:8px}
+.enm{font-weight:700;font-size:.84rem;line-height:1.25}.enm.nn{color:#a0aab8;font-weight:400;font-style:italic}
+.elc{font-size:.73rem;color:#5a6a82;margin-top:1px}.ecd{font-size:.67rem;color:#a0aab8;font-family:monospace;margin-top:1px}
+/* Barras */
+.bw{margin-bottom:10px}.blb{display:flex;justify-content:space-between;font-size:.79rem;margin-bottom:3px}
+.blb .bn{font-weight:600}.bbg{background:#f0f0f5;border-radius:8px;height:10px;overflow:hidden}
+.bfl{height:100%;border-radius:8px}
+/* Distribuição */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:11px}
+.dc{background:var(--bg);border-radius:9px;padding:12px 13px;border:1px solid var(--bd)}
+.dc .da{font-size:.73rem;font-weight:700;color:#5a6a82;text-transform:uppercase;margin-bottom:6px}
+.ds{display:flex;justify-content:space-between;font-size:.79rem;padding:2px 0}
+.ds .dk{color:#5a6a82}.ds .dv{font-weight:700}
+/* Pontos fortes/fracos */
+.pfg{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+@media(max-width:600px){.pfg{grid-template-columns:1fr}}
+.pfc{border-radius:11px;padding:15px 17px}
+.pfc.ft{background:#f0fdf4;border:1.5px solid #bbf7d0}
+.pfc.fk{background:#fff7ed;border:1.5px solid #fed7aa}
+.pfc h3{font-size:.85rem;font-weight:700;margin-bottom:9px}
+.pfc h3.ft{color:var(--vd)}.pfc h3.fk{color:var(--lr)}
+.pfi{font-size:.81rem;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.06);display:flex;gap:7px;align-items:flex-start}
+.pfi:last-child{border-bottom:none}
+/* Alunos */
+.resbar{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px}
+.ri{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:7px 12px;font-size:.79rem}
+.ri strong{display:block;font-size:1.05rem;color:var(--az)}
+.nc{display:inline-block;min-width:48px;padding:2px 6px;border-radius:6px;font-weight:700;font-size:.81rem;text-align:center}
+.nc.nv{background:#f1f5f9;color:#a0aab8;font-weight:400;font-size:.74rem}
+.aht td{background:#fffbeb!important}
+/* Competências */
+.area-tabs{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.cc{background:var(--bg);border-radius:10px;border:1px solid var(--bd);margin-bottom:9px;overflow:hidden}
+.cc:hover{box-shadow:var(--sh)}
+.ch2{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:13px 15px;gap:12px;flex-wrap:wrap}
+.cid{font-size:.79rem;font-weight:800;min-width:26px}
+.cnm{font-size:.83rem;font-weight:600;line-height:1.3;flex:1}
+.cpcts{display:flex;gap:6px;align-items:center;flex-wrap:wrap;flex-shrink:0}
+.pb{display:inline-block;padding:3px 9px;border-radius:10px;font-size:.77rem;font-weight:700;white-space:nowrap}
+.pbig{font-size:.86rem;padding:4px 12px}
+.cbbar{height:5px;overflow:hidden}
+.cbfill{height:100%;transition:width .5s}
+.cdet{padding:12px 15px;border-top:1px solid var(--bd);display:none}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:6px}
+.hi{background:#fff;border-radius:7px;padding:7px 9px;border:1px solid var(--bd)}
+.hh{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.hid{font-size:.76rem;font-weight:800;min-width:26px}
+.lgd{font-size:.73rem;color:#5a6a82;margin-top:8px}
+footer{text-align:center;padding:14px;font-size:.71rem;color:#a0aab8;margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+  <div class="enome">INTERATIVA C — EI EF M</div>
+  <div class="esub">INEP 41031105 · Londrina, PR · Região Sul · Escola Privada</div>
+  <div class="badges">
+    <span class="badge">🏆 2024: #5 Londrina · #19 Paraná</span>
+    <span class="badge">🏆 2025: #4 Londrina · #25 Paraná</span>
+    <span class="badge yw">⚠️ Apenas alunos com presença em todas as provas + redação</span>
+  </div>
+</header>
+<div class="aviso">⚠️ <b>Critério:</b> Somente alunos presentes nas 4 áreas (CN, CH, LC, MT) com redação válida são contabilizados. Alunos ausentes em qualquer dia são excluídos.</div>
+<div class="tabbar">
+  <span class="lbl">Análise:</span>
+  <button class="tbtn on" onclick="setAno('2025',this)">2025</button>
+  <button class="tbtn" onclick="setAno('2024',this)">2024</button>
+  <button class="tbtn" onclick="setAno('comp',this)">Comparativo 2024 × 2025</button>
+</div>
+<div class="wrap">
+  <div class="kgrid" id="kpis"></div>
+  <div class="col2">
+    <div class="card"><h2>Desempenho por Área</h2><div class="ch"><canvas id="cRadar"></canvas></div></div>
+    <div class="card"><h2>Componentes da Redação</h2><div class="ch"><canvas id="cComps"></canvas></div></div>
+  </div>
+  <div class="card" id="sBench"><h2>Comparativo com Benchmarks (alunos completos)</h2><table class="gt" id="tBench"></table></div>
+  <div class="card" id="sDist"><h2>Distribuição de Notas por Área</h2><div class="dgrid" id="dDist"></div></div>
+  <div class="card" id="sCompBars"><h2>Componentes da Redação — média por competência (máx 200)</h2><div id="compBars"></div></div>
+  <div class="card">
+    <h2>Desempenho por Competência e Habilidade</h2>
+    <p style="font-size:.79rem;color:#5a6a82;margin-bottom:12px">% de acertos dos alunos completos por competência da Matriz de Referência. Clique para expandir as habilidades.</p>
+    <div class="area-tabs" id="areaTabs">
+      <button class="tbtn sm on" onclick="setAreaComp('CN',this)">Ciências da Natureza</button>
+      <button class="tbtn sm" onclick="setAreaComp('CH',this)">Ciências Humanas</button>
+      <button class="tbtn sm" onclick="setAreaComp('LC',this)">Linguagens e Códigos</button>
+      <button class="tbtn sm" onclick="setAreaComp('MT',this)">Matemática</button>
+    </div>
+    <div id="compArea"></div>
+  </div>
+  <div class="card">
+    <h2>Quadro Comparativo — Top 10 Escolas de Londrina (alunos completos)</h2>
+    <div style="display:flex;gap:7px;margin-bottom:13px">
+      <button class="tbtn sm on" id="tb25" onclick="setTopAno('2025')">2025</button>
+      <button class="tbtn sm" id="tb24" onclick="setTopAno('2024')">2024</button>
+    </div>
+    <div style="overflow-x:auto"><table class="gt" id="tTop10"></table></div>
+    <div style="margin-top:15px"><div class="chh"><canvas id="cTop10"></canvas></div></div>
+    <div class="lgd">🔵 Destaque = Interativa · <span class="ml">Verde</span> = melhor · <span class="fr">Vermelho</span> = abaixo</div>
+  </div>
+  <div class="card">
+    <h2>Notas Individuais — Alunos com Presença Completa</h2>
+    <p style="font-size:.79rem;color:#5a6a82;margin-bottom:11px">Alunos anônimos nos microdados. Ordenados por média geral. Apenas alunos com todas as notas.</p>
+    <div class="resbar" id="alunosRes"></div>
+    <div style="display:flex;gap:10px;align-items:flex-end;margin-bottom:12px;flex-wrap:wrap">
+      <div><label style="font-size:.72rem;font-weight:700;color:#5a6a82;text-transform:uppercase;display:block;margin-bottom:3px">Ordenar por</label>
+      <select id="sortAlunos" onchange="renderAlunos()" style="padding:6px 9px;border:1.5px solid var(--bd);border-radius:7px;font-size:.82rem">
+        <option value="geral">Média Geral</option><option value="cn">CN</option>
+        <option value="ch">CH</option><option value="lc">LC</option>
+        <option value="mt">MT</option><option value="red">Redação</option>
+      </select></div>
+    </div>
+    <div style="overflow-x:auto"><table class="gt" id="tAlunos"></table></div>
+  </div>
+  <div class="card"><h2>Pontos Fortes e Oportunidades de Melhoria</h2><div class="pfg" id="pfGrid"></div></div>
+</div>
+<footer>Fonte: INEP — Microdados ENEM 2024 & 2025 · Censo Escolar 2025 · Critério: CN + CH + LC + MT presentes + redação válida · Análise gerada automaticamente</footer>
+<script>
+const DB={"2024":{"notas_CN":[456.9,484.0,509.0,517.2,534.0,545.7,545.8,550.0,555.4,564.1,566.3,569.6,570.0,571.4,580.7,586.5,591.0,601.7,602.1,603.9,605.2,609.2,622.2,632.6,657.2,671.5,685.4,695.5],"avg_CN":581.6,"med_CN":576.0,"min_CN":456.9,"max_CN":695.5,"notas_CH":[497.3,502.7,509.0,510.9,523.4,529.9,533.5,550.9,566.3,570.3,586.0,587.2,598.0,602.3,607.9,614.2,615.3,630.5,632.6,640.9,642.7,646.8,647.0,659.5,669.1,669.5,726.7,729.0],"avg_CH":600.0,"med_CH":605.1,"min_CH":497.3,"max_CH":729.0,"notas_LC":[491.7,496.3,511.9,536.9,538.2,542.3,548.0,552.8,560.1,564.6,566.1,571.0,583.7,583.8,588.5,590.9,597.3,600.7,605.3,607.4,610.9,612.6,624.3,631.0,641.8,657.4,683.4,744.5],"avg_LC":587.3,"med_LC":586.1,"min_LC":491.7,"max_LC":744.5,"notas_MT":[476.1,520.9,557.3,571.3,613.3,627.6,638.2,645.7,646.8,647.8,648.2,656.9,670.0,680.9,681.6,688.2,692.3,694.7,704.7,711.0,734.3,739.1,742.1,743.8,752.9,767.4,768.0,824.4],"avg_MT":673.1,"med_MT":681.2,"min_MT":476.1,"max_MT":824.4,"notas_RED":[680.0,700.0,740.0,760.0,760.0,780.0,800.0,820.0,820.0,840.0,860.0,860.0,860.0,880.0,880.0,880.0,880.0,880.0,880.0,880.0,900.0,900.0,900.0,920.0,940.0,940.0,940.0,940.0],"avg_RED":850.7,"med_RED":880.0,"min_RED":680.0,"max_RED":940.0,"C1":153.6,"C2":183.6,"C3":156.4,"C4":175.7,"C5":181.4,"avg_GERAL":658.5,"n":28,"rank_ldna":5,"rank_pr":19,"tot_ldna":86,"tot_pr":1895},"2025":{"notas_CN":[458.3,464.8,492.2,523.2,527.7,531.2,532.0,626.5,637.7,643.8,653.6,653.7],"avg_CN":562.1,"med_CN":531.6,"min_CN":458.3,"max_CN":653.7,"notas_CH":[401.9,575.7,579.6,582.0,583.1,592.4,621.8,636.5,643.7,676.8,682.8,791.6],"avg_CH":614.0,"med_CH":607.1,"min_CH":401.9,"max_CH":791.6,"notas_LC":[547.0,569.7,582.2,583.0,591.7,616.6,623.5,626.4,627.2,650.7,665.2,693.9],"avg_LC":614.8,"med_LC":620.0,"min_LC":547.0,"max_LC":693.9,"notas_MT":[452.0,456.6,512.0,566.3,578.7,625.5,670.6,688.3,714.7,739.2,740.8,773.3],"avg_MT":626.5,"med_MT":648.0,"min_MT":452.0,"max_MT":773.3,"notas_RED":[560.0,760.0,760.0,780.0,800.0,860.0,860.0,860.0,880.0,920.0,940.0,960.0],"avg_RED":828.3,"med_RED":860.0,"min_RED":560.0,"max_RED":960.0,"C1":155.0,"C2":181.7,"C3":155.0,"C4":180.0,"C5":156.7,"avg_GERAL":649.1,"n":12,"rank_ldna":4,"rank_pr":25,"tot_ldna":83,"tot_pr":1923}};
+const BENCH={"2024":{"BR":{"CN":487.0,"CH":506.0,"LC":520.2,"MT":519.0,"RED":650.8,"GERAL":536.6},"PR":{"CN":492.1,"CH":509.6,"LC":527.1,"MT":517.3,"RED":624.1,"GERAL":534.0},"LDNA":{"CN":512.1,"CH":531.1,"LC":542.6,"MT":542.5,"RED":638.7,"GERAL":553.4},"PRIV_BR":{"CN":536.3,"CH":557.9,"LC":556.8,"MT":593.1,"RED":750.9,"GERAL":599.0},"PRIV_LDNA":{"CN":562.1,"CH":577.8,"LC":571.2,"MT":622.7,"RED":732.1,"GERAL":613.2}},"2025":{"BR":{"CN":492.1,"CH":507.4,"LC":528.1,"MT":513.8,"RED":610.6,"GERAL":530.4},"PR":{"CN":494.4,"CH":513.3,"LC":535.4,"MT":524.2,"RED":583.8,"GERAL":530.2},"LDNA":{"CN":508.0,"CH":532.5,"LC":549.8,"MT":546.0,"RED":604.1,"GERAL":548.1},"PRIV_BR":{"CN":538.7,"CH":556.1,"LC":569.8,"MT":596.9,"RED":717.8,"GERAL":595.9},"PRIV_LDNA":{"CN":545.3,"CH":570.3,"LC":584.1,"MT":616.2,"RED":693.0,"GERAL":601.8}}};
+const TOP10={"2024":[{"escola":"41154061","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"COLEGIO MAXI AVENIDA MARINGA - ENSINO FUNDAMENTAL E MEDIO","cn":616.9,"ch":645.3,"lc":617.2,"mt":702.4,"red":795.9,"geral":675.5,"n":29},{"escola":"41158512","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"SIGMA COLEGIO - EM","cn":608.3,"ch":621.9,"lc":601.4,"mt":687.2,"red":807.4,"geral":665.2,"n":54},{"escola":"41379110","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"PGD C - EI EF M","cn":601.2,"ch":617.0,"lc":592.6,"mt":695.8,"red":796.5,"geral":660.6,"n":40},{"escola":"41166043","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"COLEGIO PRIME EF EM","cn":589.6,"ch":598.9,"lc":592.0,"mt":660.8,"red":855.6,"geral":659.4,"n":27},{"escola":"41031105","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"INTERATIVA C - EI EF M","cn":581.6,"ch":600.0,"lc":587.3,"mt":673.1,"red":850.7,"geral":658.5,"n":28},{"escola":"41033310","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"COLEGIO UNIVERSITARIO","cn":591.9,"ch":613.3,"lc":588.3,"mt":694.9,"red":794.0,"geral":656.5,"n":150},{"escola":"41160266","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"COLEGIO POSITIVO SANTA MARIA - EDUCACAO INFANTIL ENSINO FUNDAMENTAL E MEDIO","cn":588.2,"ch":615.0,"lc":581.1,"mt":671.3,"red":801.8,"geral":651.5,"n":34},{"escola":"41032039","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"MAXI C - EI EF","cn":594.7,"ch":615.8,"lc":587.4,"mt":683.2,"red":763.3,"geral":648.9,"n":86},{"escola":"41031814","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"MAE DE DEUS C - EI EF M","cn":597.2,"ch":604.8,"lc":596.4,"mt":681.6,"red":751.1,"geral":646.2,"n":36},{"escola":"41031733","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"LONDRINENSE C - EI EF M PROFIS","cn":579.7,"ch":602.2,"lc":581.2,"mt":664.0,"red":789.4,"geral":643.3,"n":106}],"2025":[{"escola":"41166043","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"COLEGIO PRIME EF EM","cn":590.1,"ch":601.2,"lc":602.4,"mt":696.1,"red":795.6,"geral":657.1,"n":50},{"escola":"41033310","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"COLEGIO UNIVERSITARIO","cn":599.0,"ch":600.9,"lc":608.5,"mt":699.9,"red":758.8,"geral":653.4,"n":151},{"escola":"41032039","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"MAXI C - EI EF","cn":604.8,"ch":610.8,"lc":606.8,"mt":696.8,"red":732.4,"geral":650.3,"n":76},{"escola":"41031105","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"INTERATIVA C - EI EF M","cn":562.1,"ch":614.0,"lc":614.8,"mt":626.5,"red":828.3,"geral":649.1,"n":12},{"escola":"41030095","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"PREMIER C - EI EF M","cn":588.6,"ch":595.4,"lc":597.9,"mt":657.3,"red":767.5,"geral":641.3,"n":59},{"escola":"41358899","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"ST JAMES C - EI EF M","cn":576.1,"ch":599.7,"lc":625.3,"mt":668.2,"red":731.5,"geral":640.2,"n":26},{"escola":"41379110","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"PGD C - EI EF M","cn":581.8,"ch":598.3,"lc":595.3,"mt":661.1,"red":737.0,"geral":634.7,"n":33},{"escola":"41031733","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"LONDRINENSE C - EI EF M PROFIS","cn":565.7,"ch":590.8,"lc":596.5,"mt":654.0,"red":721.4,"geral":625.7,"n":118},{"escola":"41031814","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"MAE DE DEUS C - EI EF M","cn":561.6,"ch":593.9,"lc":597.6,"mt":663.7,"red":704.6,"geral":624.3,"n":26},{"escola":"41032004","municipio":"Londrina","uf":"PR","regiao":"Sul","tipo":"Privada","nome":"MARISTA DE LONDRINA C - EI EF M","cn":557.7,"ch":584.3,"lc":591.9,"mt":679.1,"red":706.7,"geral":623.9,"n":66}]};
+const ALUNOS={"2024":[{"id":28,"cn":685.4,"ch":726.7,"lc":657.4,"mt":824.4,"red":900.0,"c1":180.0,"c2":180.0,"c3":140.0,"c4":200.0,"c5":200.0,"geral":758.8,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 1"},{"id":22,"cn":605.2,"ch":729.0,"lc":683.4,"mt":681.6,"red":880.0,"c1":160.0,"c2":200.0,"c3":180.0,"c4":160.0,"c5":180.0,"geral":715.8,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 2"},{"id":19,"cn":622.2,"ch":669.5,"lc":631.0,"mt":704.7,"red":880.0,"c1":160.0,"c2":200.0,"c3":180.0,"c4":140.0,"c5":200.0,"geral":701.5,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 3"},{"id":18,"cn":601.7,"ch":607.9,"lc":597.3,"mt":742.1,"red":940.0,"c1":160.0,"c2":200.0,"c3":200.0,"c4":180.0,"c5":200.0,"geral":697.8,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 4"},{"id":2,"cn":570.0,"ch":632.6,"lc":744.5,"mt":680.9,"red":860.0,"c1":160.0,"c2":200.0,"c3":160.0,"c4":180.0,"c5":160.0,"geral":697.6,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 5"},{"id":1,"cn":534.0,"ch":640.9,"lc":624.3,"mt":734.3,"red":940.0,"c1":180.0,"c2":200.0,"c3":180.0,"c4":180.0,"c5":200.0,"geral":694.7,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 6"},{"id":20,"cn":632.6,"ch":614.2,"lc":605.3,"mt":739.1,"red":880.0,"c1":160.0,"c2":200.0,"c3":180.0,"c4":180.0,"c5":160.0,"geral":694.2,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 7"},{"id":15,"cn":695.5,"ch":509.0,"lc":641.8,"mt":767.4,"red":840.0,"c1":160.0,"c2":160.0,"c3":140.0,"c4":180.0,"c5":200.0,"geral":690.7,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 8"},{"id":8,"cn":671.5,"ch":646.8,"lc":583.7,"mt":768.0,"red":740.0,"c1":120.0,"c2":180.0,"c3":140.0,"c4":140.0,"c5":160.0,"geral":682.0,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 9"},{"id":11,"cn":657.2,"ch":615.3,"lc":610.9,"mt":711.0,"red":800.0,"c1":160.0,"c2":160.0,"c3":140.0,"c4":180.0,"c5":160.0,"geral":678.9,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 10"},{"id":21,"cn":591.0,"ch":659.5,"lc":600.7,"mt":743.8,"red":760.0,"c1":120.0,"c2":180.0,"c3":140.0,"c4":160.0,"c5":160.0,"geral":671.0,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 11"},{"id":9,"cn":566.3,"ch":630.5,"lc":566.1,"mt":647.8,"red":940.0,"c1":160.0,"c2":200.0,"c3":180.0,"c4":200.0,"c5":200.0,"geral":670.1,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 12"},{"id":7,"cn":603.9,"ch":602.3,"lc":612.6,"mt":638.2,"red":880.0,"c1":160.0,"c2":180.0,"c3":160.0,"c4":180.0,"c5":200.0,"geral":667.4,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 13"},{"id":24,"cn":609.2,"ch":586.0,"lc":590.9,"mt":670.0,"red":880.0,"c1":160.0,"c2":160.0,"c3":160.0,"c4":200.0,"c5":200.0,"geral":667.2,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 14"},{"id":6,"cn":569.6,"ch":669.1,"lc":564.6,"mt":646.8,"red":860.0,"c1":160.0,"c2":180.0,"c3":140.0,"c4":180.0,"c5":200.0,"geral":662.0,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 15"},{"id":5,"cn":564.1,"ch":642.7,"lc":583.8,"mt":571.3,"red":940.0,"c1":160.0,"c2":200.0,"c3":180.0,"c4":200.0,"c5":200.0,"geral":660.4,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 16"},{"id":25,"cn":509.0,"ch":566.3,"lc":607.4,"mt":692.3,"red":880.0,"c1":160.0,"c2":180.0,"c3":160.0,"c4":180.0,"c5":200.0,"geral":651.0,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 17"},{"id":14,"cn":545.8,"ch":647.0,"lc":511.9,"mt":648.2,"red":880.0,"c1":160.0,"c2":200.0,"c3":160.0,"c4":160.0,"c5":200.0,"geral":646.6,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 18"},{"id":23,"cn":555.4,"ch":529.9,"lc":552.8,"mt":694.7,"red":900.0,"c1":140.0,"c2":200.0,"c3":160.0,"c4":200.0,"c5":200.0,"geral":646.6,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 19"},{"id":10,"cn":602.1,"ch":587.2,"lc":571.0,"mt":645.7,"red":820.0,"c1":160.0,"c2":180.0,"c3":160.0,"c4":160.0,"c5":160.0,"geral":645.2,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 20"},{"id":3,"cn":580.7,"ch":598.0,"lc":588.5,"mt":752.9,"red":680.0,"c1":140.0,"c2":160.0,"c3":120.0,"c4":140.0,"c5":120.0,"geral":640.0,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 21"},{"id":4,"cn":571.4,"ch":510.9,"lc":542.3,"mt":613.3,"red":920.0,"c1":160.0,"c2":200.0,"c3":160.0,"c4":200.0,"c5":200.0,"geral":631.6,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 22"},{"id":26,"cn":545.7,"ch":550.9,"lc":536.9,"mt":688.2,"red":780.0,"c1":120.0,"c2":180.0,"c3":160.0,"c4":160.0,"c5":160.0,"geral":620.3,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 23"},{"id":27,"cn":456.9,"ch":533.5,"lc":491.7,"mt":627.6,"red":900.0,"c1":160.0,"c2":200.0,"c3":160.0,"c4":200.0,"c5":180.0,"geral":601.9,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 24"},{"id":12,"cn":484.0,"ch":523.4,"lc":560.1,"mt":656.9,"red":760.0,"c1":160.0,"c2":140.0,"c3":160.0,"c4":180.0,"c5":120.0,"geral":596.9,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 25"},{"id":17,"cn":517.2,"ch":570.3,"lc":496.3,"mt":520.9,"red":860.0,"c1":160.0,"c2":180.0,"c3":140.0,"c4":200.0,"c5":180.0,"geral":592.9,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 26"},{"id":16,"cn":586.5,"ch":497.3,"lc":548.0,"mt":557.3,"red":700.0,"c1":120.0,"c2":160.0,"c3":120.0,"c4":120.0,"c5":180.0,"geral":577.8,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 27"},{"id":13,"cn":550.0,"ch":502.7,"lc":538.2,"mt":476.1,"red":820.0,"c1":140.0,"c2":180.0,"c3":120.0,"c4":180.0,"c5":200.0,"geral":577.4,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 28"}],"2025":[{"id":5,"cn":643.8,"ch":676.8,"lc":665.2,"mt":773.3,"red":860.0,"c1":160.0,"c2":180.0,"c3":160.0,"c4":200.0,"c5":160.0,"geral":723.8,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 1"},{"id":13,"cn":653.6,"ch":791.6,"lc":693.9,"mt":714.7,"red":760.0,"c1":160.0,"c2":160.0,"c3":120.0,"c4":160.0,"c5":160.0,"geral":722.8,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 2"},{"id":14,"cn":653.7,"ch":682.8,"lc":650.7,"mt":740.8,"red":800.0,"c1":160.0,"c2":200.0,"c3":160.0,"c4":200.0,"c5":80.0,"geral":705.6,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 3"},{"id":4,"cn":637.7,"ch":636.5,"lc":582.2,"mt":739.2,"red":780.0,"c1":160.0,"c2":160.0,"c3":140.0,"c4":160.0,"c5":160.0,"geral":675.1,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 4"},{"id":2,"cn":523.2,"ch":621.8,"lc":616.6,"mt":688.3,"red":920.0,"c1":160.0,"c2":200.0,"c3":160.0,"c4":200.0,"c5":200.0,"geral":674.0,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 5"},{"id":10,"cn":626.5,"ch":575.7,"lc":626.4,"mt":670.6,"red":860.0,"c1":160.0,"c2":180.0,"c3":160.0,"c4":180.0,"c5":180.0,"geral":671.8,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 6"},{"id":6,"cn":531.2,"ch":643.7,"lc":623.5,"mt":625.5,"red":880.0,"c1":160.0,"c2":200.0,"c3":140.0,"c4":200.0,"c5":180.0,"geral":660.8,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 7"},{"id":3,"cn":532.0,"ch":592.4,"lc":569.7,"mt":578.7,"red":960.0,"c1":160.0,"c2":200.0,"c3":200.0,"c4":200.0,"c5":200.0,"geral":646.6,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 8"},{"id":11,"cn":492.2,"ch":582.0,"lc":627.2,"mt":512.0,"red":940.0,"c1":160.0,"c2":200.0,"c3":200.0,"c4":200.0,"c5":180.0,"geral":630.7,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 9"},{"id":8,"cn":527.7,"ch":583.1,"lc":591.7,"mt":566.3,"red":760.0,"c1":140.0,"c2":200.0,"c3":140.0,"c4":160.0,"c5":120.0,"geral":605.8,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 10"},{"id":9,"cn":458.3,"ch":579.6,"lc":583.0,"mt":456.6,"red":860.0,"c1":160.0,"c2":180.0,"c3":160.0,"c4":180.0,"c5":180.0,"geral":587.5,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 11"},{"id":12,"cn":464.8,"ch":401.9,"lc":547.0,"mt":452.0,"red":560.0,"c1":120.0,"c2":120.0,"c3":120.0,"c4":120.0,"c5":80.0,"geral":485.1,"pCN":true,"pCH":true,"pLC":true,"pMT":true,"pRED":true,"label":"Aluno 12"}]};
+const COMPDATA={"2024":{"CN":{"C1":{"pct":31.4,"nome":"Ciências naturais como construções humanas","habs":{"1":39.3,"2":32.1,"3":28.6,"4":25.0}},"C2":{"pct":28.6,"nome":"Tecnologias associadas às ciências naturais","habs":{"5":30.4,"6":25.0,"7":28.6}},"C3":{"pct":26.8,"nome":"Degradação e conservação ambiental","habs":{"8":21.4,"9":46.4,"10":32.1,"11":21.4,"12":25.0}},"C4":{"pct":35.7,"nome":"Interações organismos-ambiente e saúde","habs":{"13":25.0,"14":51.8,"15":26.8,"16":32.1}},"C5":{"pct":33.0,"nome":"Métodos e procedimentos das ciências naturais","habs":{"17":32.1,"18":21.4,"19":57.1}},"C6":{"pct":44.6,"nome":"Física: movimentos, energia e eletromagnetismo","habs":{"20":33.9,"21":50.0,"22":32.1,"23":58.9}},"C7":{"pct":23.5,"nome":"Química: materiais, reações e ambiente","habs":{"24":33.9,"25":25.0,"26":12.5,"27":21.4}},"C8":{"pct":50.0,"nome":"Biologia: organismos, hereditariedade e ecologia","habs":{"28":64.3,"29":35.7,"30":35.7}}},"CH":{"C1":{"pct":57.7,"nome":"Cultura e identidades","habs":{"1":51.8,"2":62.5,"3":56.0,"4":60.7,"5":58.3}},"C2":{"pct":64.3,"nome":"Espaços geográficos e relações socioeconômicas","habs":{"6":96.4,"7":51.8,"8":53.6,"9":53.6,"10":71.4}},"C3":{"pct":70.9,"nome":"Instituições sociais, políticas e econômicas","habs":{"11":66.1,"12":64.3,"13":42.9,"14":71.4,"15":92.9}},"C4":{"pct":61.3,"nome":"Técnicas, tecnologias e produção","habs":{"16":55.4,"17":78.6,"18":39.3,"19":67.9,"20":71.4}},"C5":{"pct":67.3,"nome":"Cidadania, democracia e direitos","habs":{"21":87.5,"22":82.1,"23":30.4,"24":71.4,"25":82.1}},"C6":{"pct":48.8,"nome":"Sociedade, natureza e espaço geográfico","habs":{"26":51.8,"27":57.1,"28":32.1,"29":50.0,"30":50.0}}},"LC":{"C1":{"pct":80.7,"nome":"Tecnologias da comunicação e informação","habs":{"1":64.3,"2":85.7,"3":92.9,"4":80.4}},"C2":{"pct":77.1,"nome":"Língua estrangeira moderna","habs":{"5":85.7,"6":85.7,"7":71.4,"8":71.4}},"C3":{"pct":77.9,"nome":"Linguagem corporal e identidade","habs":{"9":69.6,"10":78.6,"11":92.9}},"C4":{"pct":60.1,"nome":"Arte como saber cultural e estético","habs":{"12":75.0,"13":58.3,"14":55.4}},"C5":{"pct":47.0,"nome":"Expressão literária e contexto histórico","habs":{"15":40.5,"16":42.9,"17":58.9}},"C6":{"pct":64.3,"nome":"Sistemas simbólicos e significação","habs":{"18":40.5,"19":92.9,"20":85.7}},"C7":{"pct":65.0,"nome":"Opiniões, argumentação e persuasão","habs":{"21":82.1,"22":33.9,"23":96.4,"24":78.6}},"C8":{"pct":37.5,"nome":"Língua portuguesa: variação e norma culta","habs":{"25":32.1,"26":17.9,"27":67.9}},"C9":{"pct":59.5,"nome":"Tecnologias de comunicação e sociedade","habs":{"28":28.6,"29":92.9,"30":57.1}}},"MT":{"C1":{"pct":48.4,"nome":"Números: naturais, inteiros, racionais e reais","habs":{"1":66.1,"2":41.1,"3":50.0,"4":48.2,"5":25.0}},"C2":{"pct":47.1,"nome":"Geometria: espaço, forma e representação","habs":{"6":32.1,"7":71.4,"8":55.4,"9":21.4}},"C3":{"pct":27.6,"nome":"Grandezas, medidas e escalas","habs":{"10":42.9,"11":14.3,"12":35.7,"13":17.9,"14":28.6}},"C4":{"pct":50.0,"nome":"Variação de grandezas e proporcionalidade","habs":{"15":60.7,"16":51.8,"17":50.0,"18":25.0}},"C5":{"pct":48.2,"nome":"Álgebra e modelagem matemática","habs":{"19":67.9,"20":35.7,"21":39.3,"22":26.8,"23":82.1}},"C6":{"pct":67.9,"nome":"Gráficos, tabelas e inferências","habs":{"24":57.1,"25":62.5,"26":89.3}},"C7":{"pct":51.2,"nome":"Estatística e probabilidade","habs":{"27":87.5,"28":25.0,"29":46.4,"30":35.7}}}},"2025":{"CN":{"C1":{"pct":41.7,"nome":"Ciências naturais como construções humanas","habs":{"1":45.8,"2":33.3,"3":29.2,"4":66.7}},"C2":{"pct":28.3,"nome":"Tecnologias associadas às ciências naturais","habs":{"5":41.7,"6":25.0,"7":16.7}},"C3":{"pct":55.0,"nome":"Degradação e conservação ambiental","habs":{"8":25.0,"9":25.0,"10":100.0,"11":75.0,"12":50.0}},"C4":{"pct":41.7,"nome":"Interações organismos-ambiente e saúde","habs":{"13":58.3,"14":25.0,"15":8.3,"16":75.0}},"C5":{"pct":27.1,"nome":"Métodos e procedimentos das ciências naturais","habs":{"17":12.5,"18":58.3,"19":25.0}},"C6":{"pct":35.4,"nome":"Física: movimentos, energia e eletromagnetismo","habs":{"20":16.7,"21":54.2,"22":45.8,"23":25.0}},"C7":{"pct":40.0,"nome":"Química: materiais, reações e ambiente","habs":{"24":37.5,"25":58.3,"26":33.3,"27":33.3}},"C8":{"pct":45.0,"nome":"Biologia: organismos, hereditariedade e ecologia","habs":{"28":47.2,"29":41.7,"30":41.7}}},"CH":{"C1":{"pct":63.1,"nome":"Cultura e identidades","habs":{"1":45.8,"2":41.7,"3":83.3,"4":66.7,"5":91.7}},"C2":{"pct":58.3,"nome":"Espaços geográficos e relações socioeconômicas","habs":{"6":83.3,"7":45.8,"8":91.7,"9":41.7,"10":41.7}},"C3":{"pct":53.6,"nome":"Instituições sociais, políticas e econômicas","habs":{"11":62.5,"12":25.0,"13":33.3,"14":75.0,"15":91.7}},"C4":{"pct":65.3,"nome":"Técnicas, tecnologias e produção","habs":{"16":75.0,"17":50.0,"18":25.0,"19":83.3,"20":75.0}},"C5":{"pct":51.5,"nome":"Cidadania, democracia e direitos","habs":{"21":33.3,"22":66.7,"23":63.9,"24":37.5,"25":50.0}},"C6":{"pct":62.5,"nome":"Sociedade, natureza e espaço geográfico","habs":{"26":58.3,"27":62.5,"28":75.0,"29":58.3,"30":50.0}}},"LC":{"C1":{"pct":69.4,"nome":"Tecnologias da comunicação e informação","habs":{"1":66.7,"2":79.2,"3":50.0,"4":70.8}},"C2":{"pct":90.0,"nome":"Língua estrangeira moderna","habs":{"5":91.7,"6":95.8,"7":83.3,"8":null}},"C3":{"pct":87.5,"nome":"Linguagem corporal e identidade","habs":{"9":83.3,"10":100.0,"11":83.3}},"C4":{"pct":72.9,"nome":"Arte como saber cultural e estético","habs":{"12":79.2,"13":58.3,"14":75.0}},"C5":{"pct":65.3,"nome":"Expressão literária e contexto histórico","habs":{"15":54.2,"16":62.5,"17":79.2}},"C6":{"pct":55.0,"nome":"Sistemas simbólicos e significação","habs":{"18":54.2,"19":50.0,"20":58.3}},"C7":{"pct":52.8,"nome":"Opiniões, argumentação e persuasão","habs":{"21":58.3,"22":62.5,"23":41.7,"24":45.8}},"C8":{"pct":81.2,"nome":"Língua portuguesa: variação e norma culta","habs":{"25":75.0,"26":79.2,"27":91.7}},"C9":{"pct":58.3,"nome":"Tecnologias de comunicação e sociedade","habs":{"28":58.3,"29":37.5,"30":79.2}}},"MT":{"C1":{"pct":50.0,"nome":"Números: naturais, inteiros, racionais e reais","habs":{"1":91.7,"2":37.5,"3":33.3,"4":54.2,"5":58.3}},"C2":{"pct":38.1,"nome":"Geometria: espaço, forma e representação","habs":{"6":62.5,"7":16.7,"8":33.3,"9":29.2}},"C3":{"pct":39.3,"nome":"Grandezas, medidas e escalas","habs":{"10":16.7,"11":58.3,"12":41.7,"13":25.0,"14":33.3}},"C4":{"pct":34.7,"nome":"Variação de grandezas e proporcionalidade","habs":{"15":33.3,"16":33.3,"17":58.3,"18":25.0}},"C5":{"pct":38.3,"nome":"Álgebra e modelagem matemática","habs":{"19":37.5,"20":91.7,"21":null,"22":0.0,"23":25.0}},"C6":{"pct":52.1,"nome":"Gráficos, tabelas e inferências","habs":{"24":50.0,"25":50.0,"26":58.3}},"C7":{"pct":33.3,"nome":"Estatística e probabilidade","habs":{"27":75.0,"28":33.3,"29":20.8,"30":16.7}}}}};
+// ── Constantes ─────────────────────────────────────────────────────────
+const AREAS=['CN','CH','LC','MT','RED'];
+const ANOMES={CN:'Ciências da Natureza',CH:'Ciências Humanas',LC:'Linguagens e Códigos',MT:'Matemática',RED:'Redação'};
+const CNOMES=['C1 – Língua Portuguesa','C2 – Tecnologia/cidadania','C3 – Proposta de intervenção','C4 – Mecan. linguísticos','C5 – Tema / Coerência'];
+const AVCOR={Federal:['#1e40af','#dbeafe'],Estadual:['#166534','#dcfce7'],Municipal:['#854d0e','#fef9c3'],Privada:['#9d174d','#fce7f3'],'Não informado':['#475569','#f1f5f9']};
+const TBADGE={Federal:'tf',Estadual:'te',Municipal:'tb',Privada:'tp'};
+const AREA_COR={CN:'#2563eb',CH:'#7c3aed',LC:'#0891b2',MT:'#d97706'};
+const COMP_NOMES={
+  CN:{C1:'Ciências naturais como construções humanas',C2:'Tecnologias associadas às ciências naturais',C3:'Degradação e conservação ambiental',C4:'Interações organismos-ambiente e saúde',C5:'Métodos e procedimentos das ciências naturais',C6:'Física: movimentos, energia e eletromagnetismo',C7:'Química: materiais, reações e ambiente',C8:'Biologia: organismos, hereditariedade e ecologia'},
+  CH:{C1:'Cultura e identidades',C2:'Espaços geográficos e relações socioeconômicas',C3:'Instituições sociais, políticas e econômicas',C4:'Técnicas, tecnologias e processos de produção',C5:'Cidadania, democracia e direitos',C6:'Sociedade, natureza e espaço geográfico'},
+  LC:{C1:'Tecnologias da comunicação e informação',C2:'Língua estrangeira moderna',C3:'Linguagem corporal e identidade',C4:'Arte como saber cultural e estético',C5:'Expressão literária e contexto histórico',C6:'Sistemas simbólicos e significação',C7:'Opiniões, argumentação e persuasão',C8:'Língua portuguesa: variação e norma culta',C9:'Tecnologias de comunicação e sociedade'},
+  MT:{C1:'Números: naturais, inteiros, racionais e reais',C2:'Geometria: espaço, forma e representação',C3:'Grandezas, medidas e escalas',C4:'Variação de grandezas e proporcionalidade',C5:'Álgebra e modelagem matemática',C6:'Gráficos, tabelas e inferências',C7:'Estatística e probabilidade'}
+};
+
+// ── Estado ──────────────────────────────────────────────────────────────
+let ANO='2025', TOPANO='2025', COMPAREA='CN';
+let cR=null,cC=null,cT=null;
+
+// ── Helpers de cor ──────────────────────────────────────────────────────
+function nbg(v){if(v==null)return'';if(v>=700)return'#e6f9ee';if(v>=600)return'#f0fdf4';if(v>=500)return'#fff8e1';if(v>=400)return'#fff3e0';return'#fce4ec'}
+function ncr(v){if(v==null)return'';if(v>=700)return'#1a7a4a';if(v>=600)return'#2e7d32';if(v>=500)return'#e65100';if(v>=400)return'#c62828';return'#880000'}
+function nc(v){if(v==null)return'<td class="nc nv">—</td>';return`<td style="text-align:center"><span class="nc" style="background:${nbg(v)};color:${ncr(v)}">${v}</span></td>`}
+function pctcor(v){if(v==null)return'#94a3b8';if(v>=70)return'#16a34a';if(v>=55)return'#ca8a04';return'#dc2626'}
+function pctbg(v){if(v==null)return'#f8fafc';if(v>=70)return'#f0fdf4';if(v>=55)return'#fefce8';return'#fff1f2'}
+function initials(n){if(!n)return'?';const w=n.split(/\s+/).filter(x=>x.length>1&&!/^(DE|DA|DO|DAS|DOS|E|A|O|COLEGIO|ESCOLA|INSTITUTO|CENTRO|EMEF|EMEI|CEI|EE)$/i.test(x));if(!w.length)return n.slice(0,2).toUpperCase();if(w.length===1)return w[0].slice(0,2).toUpperCase();return(w[0][0]+w[1][0]).toUpperCase()}
+
+// ── Controles de ano ────────────────────────────────────────────────────
+function setAno(ano,btn){ANO=ano;document.querySelectorAll('.tabbar .tbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderAll()}
+function setTopAno(ano){TOPANO=ano;['tb24','tb25'].forEach(id=>document.getElementById(id).classList.toggle('on',id==='tb'+ano));renderTop10()}
+function setAreaComp(area,btn){COMPAREA=area;document.querySelectorAll('.area-tabs .tbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderCompArea()}
+
+// ── KPIs ────────────────────────────────────────────────────────────────
+function renderKPIs(){
+  const div=document.getElementById('kpis');div.innerHTML='';
+  const lbs=[['CN','Ciências Natureza'],['CH','Ciências Humanas'],['LC','Linguagens'],['MT','Matemática'],['RED','Redação'],['GERAL','Média Geral']];
+  if(ANO==='comp'){
+    const d4=DB['2024'],d5=DB['2025'];
+    lbs.forEach(([a,l])=>{const v4=d4['avg_'+a],v5=d5['avg_'+a],d=+(v5-v4).toFixed(1),cl=d>=0?'vd':'vm';
+      div.innerHTML+=`<div class="kpi ${cl}"><div class="lb">${l}</div><div class="vl">${v5}</div><div class="dl ${d>=0?'up':'dn'}">${d>=0?'▲':'▼'} ${Math.abs(d)} vs 2024</div></div>`;});
+  } else {
+    const d=DB[ANO],b=BENCH[ANO];
+    lbs.forEach(([a,l])=>{const v=d['avg_'+a],bp=b.PRIV_LDNA[a],df=+(v-bp).toFixed(1),cl=df>=5?'vd':df>=-10?'yw':'vm';
+      div.innerHTML+=`<div class="kpi ${cl}"><div class="lb">${l}</div><div class="vl">${v}</div><div class="dl ${df>=0?'up':'dn'}">${df>=0?'▲':'▼'} ${Math.abs(df)} vs priv.Ldna</div></div>`;});
+    div.innerHTML+=`<div class="kpi vd"><div class="lb">Ranking Londrina</div><div class="vl">#${d.rank_ldna}</div><div class="dl">de ${d.tot_ldna} escolas</div></div>`;
+    div.innerHTML+=`<div class="kpi yw"><div class="lb">Ranking Paraná</div><div class="vl">#${d.rank_pr}</div><div class="dl">de ${d.tot_pr} escolas</div></div>`;
+    div.innerHTML+=`<div class="kpi"><div class="lb">Alunos completos</div><div class="vl">${d.n}</div><div class="dl">ENEM ${ANO}</div></div>`;
+  }
+}
+
+// ── Radar ───────────────────────────────────────────────────────────────
+function renderRadar(){
+  if(cR)cR.destroy();
+  const ctx=document.getElementById('cRadar').getContext('2d');
+  const anos=ANO==='comp'?['2024','2025']:[ANO];
+  const ds=anos.map((a,i)=>({label:a,data:AREAS.slice(0,5).map(ar=>DB[a]['avg_'+ar]),borderColor:i===0?'#2563eb':'#16a34a',backgroundColor:i===0?'rgba(37,99,235,.12)':'rgba(22,163,74,.12)',borderWidth:2.5,pointRadius:4}));
+  if(ANO!=='comp')ds.push({label:'Priv.Ldna',data:AREAS.slice(0,5).map(ar=>BENCH[ANO].PRIV_LDNA[ar]),borderColor:'#d97706',backgroundColor:'rgba(217,119,6,.08)',borderWidth:2,borderDash:[5,4],pointRadius:3});
+  cR=new Chart(ctx,{type:'radar',data:{labels:['CN','CH','LC','MT','Red.'],datasets:ds},options:{responsive:true,maintainAspectRatio:false,scales:{r:{min:400,max:900,ticks:{stepSize:100,font:{size:10}},pointLabels:{font:{size:11,weight:'bold'}}}},plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:11}}}}}});
+}
+
+// ── Componentes Redação ─────────────────────────────────────────────────
+function renderComps(){
+  if(cC)cC.destroy();
+  const ctx=document.getElementById('cComps').getContext('2d');
+  const anos=ANO==='comp'?['2024','2025']:[ANO];
+  const ds=anos.map((a,i)=>({label:a,data:[DB[a].C1,DB[a].C2,DB[a].C3,DB[a].C4,DB[a].C5],backgroundColor:i===0?'rgba(37,99,235,.7)':'rgba(22,163,74,.75)',borderRadius:6}));
+  cC=new Chart(ctx,{type:'bar',data:{labels:['C1','C2','C3','C4','C5'],datasets:ds},options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:100,max:200,ticks:{stepSize:20}},x:{ticks:{font:{size:10}}}},plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:10}}},tooltip:{callbacks:{title:i=>CNOMES[i[0].dataIndex]}}}}});
+}
+
+// ── Benchmark table ─────────────────────────────────────────────────────
+function renderBench(){
+  const s=document.getElementById('sBench');
+  if(ANO==='comp'){s.style.display='none';return}s.style.display='';
+  const d=DB[ANO],b=BENCH[ANO];
+  const gs=[['E','Interativa (escola)',null],['BR','Brasil — Geral',b.BR],['PR','Paraná — Geral',b.PR],['LDNA','Londrina — Geral',b.LDNA],['PRIV_BR','Brasil — Privadas',b.PRIV_BR],['PRIV_LDNA','Londrina — Privadas',b.PRIV_LDNA]];
+  let h=`<tr><th style="text-align:left">Grupo</th>${['CN','CH','LC','MT','RED'].map(a=>`<th>${a}</th>`).join('')}<th>Geral</th></tr>`;
+  gs.forEach(([k,l,bv])=>{const isE=k==='E';const v=isE?{CN:d.avg_CN,CH:d.avg_CH,LC:d.avg_LC,MT:d.avg_MT,RED:d.avg_RED,GERAL:d.avg_GERAL}:bv;
+    h+=`<tr${isE?' class="hl"':''}><td>${l}</td>${['CN','CH','LC','MT','RED'].map(a=>{const val=v[a];let cl='';if(!isE){const ev=d['avg_'+a];cl=ev>=val?' ml':' fr';}return`<td class="${cl}">${val??'—'}</td>`;}).join('')}<td>${v.GERAL??'—'}</td></tr>`;});
+  document.getElementById('tBench').innerHTML=h;
+}
+
+// ── Distribuição ────────────────────────────────────────────────────────
+function renderDist(){
+  const s=document.getElementById('sDist');if(ANO==='comp'){s.style.display='none';return}s.style.display='';
+  const d=DB[ANO],div=document.getElementById('dDist');div.innerHTML='';
+  ['CN','CH','LC','MT','RED'].forEach(a=>{const notas=d['notas_'+a]||[];div.innerHTML+=`<div class="dc"><div class="da">${ANOMES[a]}</div>
+    <div class="ds"><span class="dk">Alunos</span><span class="dv">${notas.length}</span></div>
+    <div class="ds"><span class="dk">Média</span><span class="dv">${d['avg_'+a]??'—'}</span></div>
+    <div class="ds"><span class="dk">Mediana</span><span class="dv">${d['med_'+a]??'—'}</span></div>
+    <div class="ds"><span class="dk">Mínimo</span><span class="dv">${d['min_'+a]??'—'}</span></div>
+    <div class="ds"><span class="dk">Máximo</span><span class="dv">${d['max_'+a]??'—'}</span></div></div>`;});
+}
+
+// ── Barras redação ──────────────────────────────────────────────────────
+function renderCompBars(){
+  const s=document.getElementById('sCompBars');if(ANO==='comp'){s.style.display='none';return}s.style.display='';
+  const d=DB[ANO],vals=[d.C1,d.C2,d.C3,d.C4,d.C5],div=document.getElementById('compBars');
+  div.innerHTML=CNOMES.map((n,i)=>{const v=vals[i],p=(v/200*100).toFixed(1),cor=v>=180?'#16a34a':v>=160?'#2563eb':v>=140?'#d97706':'#dc2626';
+    return`<div class="bw"><div class="blb"><span class="bn">${n}</span><span><b>${v}</b>/200</span></div><div class="bbg"><div class="bfl" style="width:${p}%;background:${cor}"></div></div></div>`;}).join('');
+}
+
+// ── Competências ────────────────────────────────────────────────────────
+function renderCompArea(){
+  const area=COMPAREA,cor=AREA_COR[area];
+  const d24=COMPDATA['2024']?.[area]||{};
+  const d25=COMPDATA['2025']?.[area]||{};
+  const dMain=COMPDATA[ANO==='comp'?'2025':ANO]?.[area]||{};
+  const div=document.getElementById('compArea');
+  const nomes=COMP_NOMES[area]||{};
+  let h='';
+  for(const [comp,info] of Object.entries(dMain)){
+    const p24=d24[comp]?.pct,p25=d25[comp]?.pct,pm=info.pct;
+    const pbar=ANO==='comp'?p25:pm;
+    const cid='cd_'+area+'_'+comp;
+    h+=`<div class="cc" style="border-left:4px solid ${cor}">
+      <div class="ch2" onclick="toggleComp('${cid}')">
+        <div style="display:flex;align-items:center;gap:9px;flex:1;min-width:0">
+          <span class="cid" style="color:${cor}">${comp}</span>
+          <span class="cnm">${nomes[comp]||info.nome||comp}</span>
+        </div>
+        <div class="cpcts">`;
+    if(ANO==='comp'){
+      const df=p24!=null&&p25!=null?+(p25-p24).toFixed(1):null;
+      h+=`<span class="pb" style="background:${pctbg(p24)};color:${pctcor(p24)}">2024: ${p24!=null?p24+'%':'—'}</span>`;
+      h+=`<span class="pb" style="background:${pctbg(p25)};color:${pctcor(p25)}">2025: ${p25!=null?p25+'%':'—'}</span>`;
+      if(df!=null)h+=`<span class="pb" style="background:${df>=0?'#f0fdf4':'#fff1f2'};color:${df>=0?'#16a34a':'#dc2626'}">${df>=0?'▲':'▼'} ${Math.abs(df)}%</span>`;
+    } else {
+      h+=`<span class="pb pbig" style="background:${pctbg(pm)};color:${pctcor(pm)}">${pm!=null?pm+'%':'—'}</span>`;
+    }
+    h+=`</div></div>
+      <div class="cbbar" style="background:#e2e8f0"><div class="cbfill" style="width:${pbar||0}%;background:${pctcor(pbar)}"></div></div>
+      <div class="cdet" id="${cid}"><div class="hgrid">`;
+    const habs=info.habs||{};
+    const h24=d24[comp]?.habs||{};const h25=d25[comp]?.habs||{};
+    for(const [hk,hv] of Object.entries(habs)){
+      const hm=ANO==='comp'?h25[hk]:hv;
+      const h4=h24[hk],h5=h25[hk];
+      h+=`<div class="hi"><div class="hh"><span class="hid" style="color:${cor}">H${hk}</span>`;
+      if(ANO==='comp'){
+        h+=`<span class="pb" style="background:${pctbg(h4)};color:${pctcor(h4)};font-size:.72rem">'24:${h4!=null?h4+'%':'—'}</span>`;
+        h+=`<span class="pb" style="background:${pctbg(h5)};color:${pctcor(h5)};font-size:.72rem">'25:${h5!=null?h5+'%':'—'}</span>`;
+      } else {
+        h+=`<span class="pb" style="background:${pctbg(hm)};color:${pctcor(hm)};font-size:.73rem">${hm!=null?hm+'%':'—'}</span>`;
+      }
+      h+=`</div></div>`;
+    }
+    h+=`</div></div></div>`;
+  }
+  div.innerHTML=h||'<p style="color:#a0aab8;font-size:.83rem">Dados não disponíveis.</p>';
+}
+function toggleComp(id){const el=document.getElementById(id);if(el)el.style.display=el.style.display==='none'?'block':'none';}
+
+// ── Top 10 ──────────────────────────────────────────────────────────────
+function renderTop10(){
+  const esc=TOP10[TOPANO];
+  const inter=esc.find(e=>e.escola==='41031105');
+  const iV=inter?{CN:inter.cn,CH:inter.ch,LC:inter.lc,MT:inter.mt,RED:inter.red,GERAL:inter.geral}:{};
+  const M=['🥇','🥈','🥉'];
+  let h=`<tr><th>#</th><th>Escola</th><th>Tipo</th><th>CN</th><th>CH</th><th>LC</th><th>MT</th><th>Redação</th><th>Média Geral</th><th>Completos</th></tr>`;
+  esc.forEach((e,i)=>{const isI=e.escola==='41031105';
+    const cell=(col,v)=>{if(!isI&&v!=null&&iV[col]!=null){return`<td class="${v>iV[col]?'ml':v<iV[col]?'fr':''}">${v??'—'}</td>`;}return`<td>${v??'—'}</td>`;};
+    const nm=e.nome||'Escola '+e.escola;const al=AVCOR[e.tipo]||AVCOR['Não informado'];
+    h+=`<tr class="${isI?'hl':''}"><td style="text-align:center;font-size:.95rem">${M[i]||('#'+(i+1))}</td>
+      <td><div class="erow"><div class="av" style="color:${al[0]};background:${al[1]}">${initials(e.nome)}</div>
+      <div><div class="enm${e.nome?'':' nn'}">${nm}</div><div class="ecd">INEP ${e.escola}</div></div></div></td>
+      <td><span class="tb ${TBADGE[e.tipo]||'tf'}">${e.tipo}</span></td>
+      ${cell('CN',e.cn)}${cell('CH',e.ch)}${cell('LC',e.lc)}${cell('MT',e.mt)}${cell('RED',e.red)}${cell('GERAL',e.geral)}
+      <td style="color:#5a6a82">${e.n}</td></tr>`;});
+  document.getElementById('tTop10').innerHTML=h;
+  if(cT)cT.destroy();
+  const ctx=document.getElementById('cTop10').getContext('2d');
+  const nms=esc.map((e,i)=>{const isI=e.escola==='41031105';const nm=e.nome||'#'+(i+1);return(isI?'⭐ ':''+(i+1)+'. ')+(nm.length>17?nm.slice(0,17)+'…':nm);});
+  const mk=(lb,col,col2)=>({label:lb,data:esc.map(e=>e[col]),backgroundColor:esc.map(e=>e.escola==='41031105'?col2.replace('.55','.95'):col2),borderColor:esc.map(e=>e.escola==='41031105'?'#1a3a6b':'transparent'),borderWidth:esc.map(e=>e.escola==='41031105'?2:0),borderRadius:4});
+  cT=new Chart(ctx,{type:'bar',data:{labels:nms,datasets:[mk('CN','cn','rgba(37,99,235,.55)'),mk('CH','ch','rgba(124,58,237,.55)'),mk('LC','lc','rgba(8,145,178,.55)'),mk('MT','mt','rgba(217,119,6,.55)'),mk('Redação','red','rgba(22,163,74,.55)')]},
+    options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{font:{size:10}}},y:{min:400,max:980,ticks:{stepSize:50}}},plugins:{legend:{position:'bottom',labels:{boxWidth:12,font:{size:10}}},tooltip:{mode:'index',intersect:false}}}});
+}
+
+// ── Alunos individuais ──────────────────────────────────────────────────
+function renderAlunos(){
+  const ano=ANO==='comp'?'2025':ANO;
+  const lista=JSON.parse(JSON.stringify(ALUNOS[ano]));
+  const col=document.getElementById('sortAlunos').value;
+  lista.sort((a,b)=>(b[col]??-1)-(a[col]??-1));
+  const notas=lista.map(a=>a.geral).filter(v=>v!=null);
+  const ag=notas.length?(notas.reduce((s,v)=>s+v,0)/notas.length).toFixed(1):'—';
+  document.getElementById('alunosRes').innerHTML=
+    `<div class="ri"><strong>${lista.length}</strong>Alunos completos</div>
+     <div class="ri"><strong style="color:var(--az)">${ag}</strong>Média da turma</div>
+     <div class="ri"><strong style="color:var(--vd)">${lista.filter(a=>a.geral>=700).length}</strong>Acima de 700</div>
+     <div class="ri"><strong style="color:var(--am);filter:brightness(.8)">${lista.filter(a=>a.geral>=600&&a.geral<700).length}</strong>600–700</div>
+     <div class="ri"><strong style="color:var(--lr)">${lista.filter(a=>a.geral<600).length}</strong>Abaixo de 600</div>`;
+  function chip(v){if(v==null)return'<span class="nc nv">—</span>';const bg=v>=700?'#dcfce7':v>=600?'#f0fdf4':v>=500?'#fff8e1':v>=400?'#fff3e0':'#fce4ec';const c=v>=700?'#15803d':v>=600?'#2e7d32':v>=500?'#92400e':v>=400?'#c62828':'#880000';return`<span class="nc" style="background:${bg};color:${c}">${v}</span>`}
+  function cc(v){if(v==null)return'<span class="nc nv">—</span>';const c=v>=180?'#15803d':v>=160?'#1d4ed8':v>=140?'#92400e':'#dc2626';return`<span style="color:${c};font-weight:700">${v}</span>`}
+  let h=`<tr><th>#</th><th style="text-align:left">Aluno</th><th>CN</th><th>CH</th><th>LC</th><th>MT</th><th>Redação</th><th title="${CNOMES[0]}">C1</th><th title="${CNOMES[1]}">C2</th><th title="${CNOMES[2]}">C3</th><th title="${CNOMES[3]}">C4</th><th title="${CNOMES[4]}">C5</th><th>Média Geral</th></tr>`;
+  lista.forEach((a,i)=>{h+=`<tr class="${a.geral>=700?'aht':''}">
+    <td style="text-align:center;color:#8a9ab8;font-size:.78rem">${i+1}</td>
+    <td style="font-weight:600;font-size:.82rem">${a.label}</td>
+    <td style="text-align:center">${chip(a.cn)}</td><td style="text-align:center">${chip(a.ch)}</td>
+    <td style="text-align:center">${chip(a.lc)}</td><td style="text-align:center">${chip(a.mt)}</td>
+    <td style="text-align:center">${chip(a.red)}</td>
+    <td style="text-align:center">${cc(a.c1)}</td><td style="text-align:center">${cc(a.c2)}</td>
+    <td style="text-align:center">${cc(a.c3)}</td><td style="text-align:center">${cc(a.c4)}</td>
+    <td style="text-align:center">${cc(a.c5)}</td>
+    <td style="text-align:center">${chip(a.geral)}</td></tr>`;});
+  document.getElementById('tAlunos').innerHTML=h;
+}
+
+// ── Pontos fortes/fracos ────────────────────────────────────────────────
+function renderPF(){
+  const div=document.getElementById('pfGrid');
+  if(ANO==='comp'){
+    const d4=DB['2024'],d5=DB['2025'];
+    div.innerHTML=`
+    <div class="pfc ft"><h3 class="ft">✅ Evoluções Positivas 2024 → 2025</h3>
+      <div class="pfi"><span>📈</span><span><b>Linguagens (LC):</b> ${d4.avg_LC} → ${d5.avg_LC} (+${+(d5.avg_LC-d4.avg_LC).toFixed(1)})</span></div>
+      <div class="pfi"><span>📈</span><span><b>Ciências Humanas (CH):</b> ${d4.avg_CH} → ${d5.avg_CH} (+${+(d5.avg_CH-d4.avg_CH).toFixed(1)})</span></div>
+      <div class="pfi"><span>🏆</span><span><b>Ranking Londrina:</b> manteve top 5 nos dois anos</span></div>
+      <div class="pfi"><span>✍️</span><span><b>Redação:</b> maior nota do top 10 de Londrina em ambos os anos</span></div></div>
+    <div class="pfc fk"><h3 class="fk">⚠️ Pontos de Atenção</h3>
+      <div class="pfi"><span>📉</span><span><b>CN:</b> ${d4.avg_CN} → ${d5.avg_CN} (${+(d5.avg_CN-d4.avg_CN).toFixed(1)})</span></div>
+      <div class="pfi"><span>📉</span><span><b>Matemática:</b> ${d4.avg_MT} → ${d5.avg_MT} (${+(d5.avg_MT-d4.avg_MT).toFixed(1)})</span></div>
+      <div class="pfi"><span>📉</span><span><b>Comp.5 Redação (Tema):</b> ${d4.C5} → ${d5.C5} (${+(d5.C5-d4.C5).toFixed(1)})</span></div>
+      <div class="pfi"><span>👥</span><span><b>Alunos completos:</b> ${d4.n} (2024) → ${d5.n} (2025)</span></div></div>`;
+    return;
+  }
+  const pf={
+    '2024':{fortes:['<b>Redação 850.7</b> — destaque do top 10 de Londrina (todos completos)','<b>Matemática 673.1</b> — acima de quase todas as concorrentes','<b>#5 Londrina · #19 Paraná</b> entre 1.895 escolas com alunos completos','<b>100% dos alunos presentes</b> em todas as provas'],fracos:['<b>CN 581.6</b> — mais fraco entre as 5 primeiras de Londrina','<b>Dispersão em MT</b> — notas muito variadas entre os alunos','<b>Comp.1 Redação</b> (Língua Portuguesa) 153.6/200 — menor componente']},
+    '2025':{fortes:['<b>Redação 828.3</b> — maior nota do top 10 de Londrina','<b>LC 614.8</b> — melhor de Linguagens entre as 10 escolas','<b>CH 614.0</b> — 2ª melhor do top 10','<b>#4 Londrina · #25 Paraná</b> (alunos completos)'],fracos:['<b>CN 562.1</b> — mais fraco do top 10','<b>MT 626.5</b> — queda em relação a 2024 (673.1)','<b>Comp.5 Redação</b> caiu de 181→158 (Tema/Coerência)','<b>12 alunos completos</b> — menor turma qualificada do top 10']}
+  };
+  const p=pf[ANO]||pf['2025'];
+  div.innerHTML=`<div class="pfc ft"><h3 class="ft">✅ Pontos Fortes em ${ANO}</h3>${p.fortes.map(t=>`<div class="pfi"><span>💪</span><span>${t}</span></div>`).join('')}</div>
+  <div class="pfc fk"><h3 class="fk">⚠️ Oportunidades de Melhoria em ${ANO}</h3>${p.fracos.map(t=>`<div class="pfi"><span>🎯</span><span>${t}</span></div>`).join('')}</div>`;
+}
+
+// ── Render all ──────────────────────────────────────────────────────────
+function renderAll(){renderKPIs();renderRadar();renderComps();renderBench();renderDist();renderCompBars();renderCompArea();renderAlunos();renderPF();}
+
+renderAll();
+renderTop10();
+</script>
+</body>
+</html>
