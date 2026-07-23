@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Adaptação Cecília — Capítulo 6 — As pessoas sabem dividir?</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #ece7f5;
+    color: #3a3a3a;
+    padding: 24px 12px;
+  }
+
+  .capa {
+    max-width: 800px;
+    margin: 0 auto 30px auto;
+    background: white;
+    border-radius: 20px;
+    padding: 26px 30px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.10);
+  }
+  .capa h1 { color: #5d1c85; font-size: 24px; margin-bottom: 6px; }
+  .capa .sub { color: #7c3aa8; font-weight: 700; margin-bottom: 18px; }
+  .capa h3 { color: #2f7a3d; font-size: 15px; margin: 14px 0 6px 0; }
+  .capa ul { margin-left: 20px; font-size: 14px; line-height: 1.7; }
+  .capa .nota {
+    background: #fff4e0; border: 2px dashed #f0a93c; border-radius: 12px;
+    padding: 12px 16px; font-size: 13.5px; margin-top: 16px;
+  }
+
+  .folha {
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    background: #fdfbf5;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 31px,
+      #e3ddf0 31px, #e3ddf0 32px
+    );
+    border-radius: 20px;
+    padding: 26px 30px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.10);
+  }
+
+  .cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #6cbf7a;
+    border-radius: 14px;
+    padding: 12px 20px;
+    margin-bottom: 18px;
+  }
+  .cabecalho h1 { color: white; font-size: 19px; font-weight: 900; }
+  .cabecalho .info {
+    background: white; color: #2f7a3d; font-weight: 800; font-size: 12.5px;
+    padding: 5px 14px; border-radius: 20px;
+  }
+
+  .ref {
+    font-size: 12.5px; color: #7a7a7a; font-style: italic;
+    margin-bottom: 16px; text-align: right;
+  }
+
+  .passo {
+    border-radius: 16px; padding: 16px 18px; margin-bottom: 14px;
+    position: relative; border: 2px solid;
+  }
+  .passo-num {
+    position: absolute; top: -12px; left: 16px; color: white; font-weight: 900;
+    font-size: 12.5px; padding: 3px 14px; border-radius: 20px;
+  }
+  .passo h4 { font-size: 15.5px; margin: 4px 0 10px 0; }
+
+  .passo-roxo   { background: #f3effa; border-color: #b986d6; }
+  .passo-roxo .passo-num { background: #7c3aa8; }
+  .passo-roxo h4 { color: #5d1c85; }
+
+  .passo-verde  { background: #eef8ef; border-color: #6cbf7a; }
+  .passo-verde .passo-num { background: #2f7a3d; }
+  .passo-verde h4 { color: #2f7a3d; }
+
+  .passo-amarelo { background: #fffbe8; border-color: #f0c93c; }
+  .passo-amarelo .passo-num { background: #a67c00; }
+  .passo-amarelo h4 { color: #a67c00; }
+
+  .passo-azul { background: #eaf6fb; border-color: #58b6d9; }
+  .passo-azul .passo-num { background: #1a5a76; }
+  .passo-azul h4 { color: #1a5a76; }
+
+  table.tabela-dados {
+    width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden;
+  }
+  table.tabela-dados th {
+    background: #d9c4ef; color: #5d1c85; padding: 8px; font-size: 13.5px; text-align: left;
+  }
+  table.tabela-dados td { border-top: 1px solid #e3d5f2; padding: 12px 8px; height: 30px; }
+  table.tabela-dados td:first-child { width: 65%; }
+
+  .alternativas { display: flex; flex-wrap: wrap; gap: 14px; font-size: 14px; margin-top: 4px; }
+  .alt-item { display: flex; align-items: center; gap: 6px; }
+  .parenteses { font-weight: 800; color: #2f7a3d; }
+  .linha-preencher { display: inline-block; min-width: 110px; border-bottom: 2px solid #6cbf7a; height: 18px; }
+
+  .op-checkbox-linha { display: flex; gap: 20px; flex-wrap: wrap; font-size: 14px; margin: 10px 0; }
+  .op-checkbox-linha label { display: flex; align-items: center; gap: 6px; }
+  .quadradinho { width: 16px; height: 16px; border: 2px solid #a67c00; border-radius: 4px; background: white; display: inline-block; }
+
+  .monte-operacao {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin: 14px 0; font-size: 15px; font-weight: 700; color: #a67c00;
+  }
+  .campo-num { min-width: 90px; height: 40px; border: 2px solid #f0c93c; border-radius: 8px; background: white; }
+  .circulo-simbolo { width: 34px; height: 34px; border: 2.5px dashed #a67c00; border-radius: 50%; background: white; }
+
+  .conta-armada-container { display: flex; align-items: flex-start; gap: 14px; margin-top: 10px; }
+  .seta-indicativa {
+    font-size: 13px; color: #a67c00; font-style: italic; max-width: 110px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .seta-indicativa .arrow { font-size: 22px; }
+  .grid-conta-armada {
+    display: grid; grid-template-columns: repeat(6, 38px); grid-template-rows: repeat(4, 38px);
+    gap: 3px; background: white; border: 1.5px solid #f0c93c; border-radius: 8px; padding: 6px;
+  }
+  .celula-conta { border: 1px solid #f3e2ab; border-radius: 3px; }
+
+  .resposta-final { font-size: 15.5px; font-weight: 700; }
+  .resposta-item { margin-bottom: 14px; }
+  .resposta-item:last-child { margin-bottom: 0; }
+  .resposta-linha { display: block; border-bottom: 2.5px solid #1a5a76; height: 30px; margin-top: 8px; }
+
+  .justificativa-linhas { margin-top: 10px; }
+  .justificativa-linhas .linha-just {
+    border-bottom: 2px solid #1a5a76; height: 26px; margin-bottom: 6px;
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .folha { box-shadow: none; page-break-after: always; }
+    .capa { box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="capa">
+  <h1>📘 Adaptação "Cecília" — Material Completo</h1>
+  <div class="sub">Matemática · 4º ano · Capítulo 6 — "As pessoas sabem dividir?"</div>
+
+  <h3>✅ O que foi adaptado (16 questões-problema)</h3>
+  <ul>
+    <li>Questões que exigem <strong>interpretar um enunciado e decidir qual operação usar</strong> — a habilidade central avaliada no capítulo (objetivo: "resolver e elaborar problemas envolvendo os diferentes significados da divisão").</li>
+  </ul>
+
+  <h3>🚫 O que NÃO foi adaptado neste arquivo (e por quê)</h3>
+  <ul>
+    <li><strong>Exercícios de geometria/dobradura</strong> (p. 134-135, item 8 da p. 145) — são tarefas espaciais, não problemas de interpretação numérica; não seguem o modelo de organização de dados.</li>
+    <li><strong>Treinos puros do algoritmo</strong> (p. 137, 139, 142 itens 1-4) — já vêm com espaço de conta armada pronto no livro; adaptar aqui reduziria a prática do algoritmo em si, que é outra habilidade.</li>
+    <li><strong>Verdadeiro/Falso</strong> (p. 145 item 6) — formato já é direto e visual.</li>
+    <li><strong>Problemas investigativos abertos</strong> (canecas com múltiplas formas de organizar, p. 148 item 1a/b; kits da Isabela, p. 149; piquenique, p. 150-151; elaborar problemas, p. 152) — têm múltiplas soluções válidas e pedem raciocínio exploratório; encaixar no modelo de 6 passos reduziria a abertura da tarefa, o que descumpriria o princípio de não reduzir a habilidade avaliada.</li>
+  </ul>
+
+  <div class="nota">
+    💡 Se a coordenação quiser, dá para desenhar um modelo de apoio específico para os problemas investigativos abertos — mas ele precisa ser diferente do modelo de 6 passos, já que a lógica desses problemas não é "uma operação certa por vez".
+  </div>
+</div>
+
+<div id="folhas"></div>
+
+<script>
+const problemas = [
+  { ref: "Questão 1a · Página 141 · Missão 1 — Descubra o número (Paulo)", ops: 1 },
+  { ref: "Questão 1b · Página 141 · Missão 1 — Descubra o número (Renata)", ops: 1 },
+  { ref: "Questão 5 · Página 144 · Para Praticar", ops: 1 },
+  { ref: "Questão 2 · Página 147 · Missão 2 — Casinhas novas", ops: 1 },
+  { ref: "Questão 1c · Página 148 · Usando a divisão para medir", ops: 1, justificativa: true },
+  { ref: "Questão 1 · Página 153 · Para Praticar — Lápis de cor",
+    ops: 1, respostas: ["a) Quantas caixas completas serão formadas:", "b) Quantos lápis faltam para mais uma caixa:"] },
+  { ref: "Questão 1c · Página 153 · Para Praticar — Lápis de cor (2ª situação)", ops: 1 },
+  { ref: "Questão 2 · Página 153 · Para Praticar — Concurso", ops: 1 },
+  { ref: "Questão 3 · Página 154 · Para Praticar — Mercadinho do Alberto", ops: 1 },
+  { ref: "Questão 4 · Página 154 · Para Praticar — Banda de rock", ops: 1 },
+  { ref: "Questão 5 · Página 154 · Para Praticar — Corda do Afonso", ops: 1, justificativa: true },
+  { ref: "Questão 6 · Página 155 · Para Praticar — Carros para o evento", ops: 1 },
+  { ref: "Questão 7 · Página 155 · Para Praticar — Estacionamento",
+    ops: 3, respostas: ["a) Total de vagas disponíveis:", "b) Vagas a mais por fila (para 528 carros):", "c) Carros por fila nesse caso:"] },
+  { ref: "Questão 8 · Página 156 · Para Praticar — Televisão", ops: 1 },
+  { ref: "Questão 9 · Página 156 · Para Praticar — Prestações", ops: 1 },
+  { ref: "Questão 10 · Página 156 · Para Praticar — Caixas do Pedro", ops: 2 },
+];
+
+function passoDados() {
+  return `
+  <div class="passo passo-roxo">
+    <div class="passo-num">PASSO 1</div>
+    <h4>Organize os dados</h4>
+    <table class="tabela-dados">
+      <tr><th>INFORMAÇÃO</th><th>NÚMERO</th></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td></td><td></td></tr>
+      <tr><td></td><td></td></tr>
+    </table>
+  </div>`;
+}
+
+function passoAlternativas(numPasso, titulo) {
+  return `
+  <div class="passo passo-verde">
+    <div class="passo-num">PASSO ${numPasso}</div>
+    <h4>${titulo}</h4>
+    <div class="alternativas">
+      <div class="alt-item"><span class="parenteses">( &nbsp; )</span><span class="linha-preencher"></span></div>
+      <div class="alt-item"><span class="parenteses">( &nbsp; )</span><span class="linha-preencher"></span></div>
+      <div class="alt-item"><span class="parenteses">( &nbsp; )</span><span class="linha-preencher"></span></div>
+    </div>
+  </div>`;
+}
+
+function passoOperacao(numPasso) {
+  return `
+  <div class="passo passo-amarelo">
+    <div class="passo-num">PASSO ${numPasso}</div>
+    <h4>O que fazer então?</h4>
+    <div class="op-checkbox-linha">
+      <label><span class="quadradinho"></span>Somar</label>
+      <label><span class="quadradinho"></span>Subtrair</label>
+      <label><span class="quadradinho"></span>Multiplicar</label>
+      <label><span class="quadradinho"></span>Dividir</label>
+    </div>
+    <div class="monte-operacao">
+      Monte a operação:
+      <div class="campo-num"></div>
+      <div class="circulo-simbolo"></div>
+      <div class="campo-num"></div>
+    </div>
+    <div class="conta-armada-container">
+      <div class="seta-indicativa"><span class="arrow">➜</span>Use este espaço para fazer a conta armada.</div>
+      <div class="grid-conta-armada">
+        ${'<div class="celula-conta"></div>'.repeat(24)}
+      </div>
+    </div>
+  </div>`;
+}
+
+function passoResposta(numPasso, respostas, justificativa) {
+  const numerado = numPasso ? `<div class="passo-num">PASSO ${numPasso}</div>` : `<div class="passo-num">RESPOSTA</div>`;
+  const itens = respostas.map(label => `
+      <div class="resposta-item">
+        ${label}
+        <span class="resposta-linha"></span>
+      </div>`).join('');
+  const just = justificativa ? `
+      <div class="resposta-item">
+        Justifique sua resposta:
+        <div class="justificativa-linhas">
+          <div class="linha-just"></div>
+          <div class="linha-just"></div>
+        </div>
+      </div>` : '';
+  return `
+  <div class="passo passo-azul">
+    ${numerado}
+    <h4>Resposta</h4>
+    <div class="resposta-final">
+      ${itens}
+      ${just}
+    </div>
+  </div>`;
+}
+
+function gerarFolha(problema) {
+  const titulos = [
+    "O que aconteceu primeiro?",
+    "O que aconteceu depois?",
+    "O que aconteceu por último?"
+  ];
+
+  let passosHtml = passoDados();
+  let numeroPasso = 2;
+  const respostas = problema.respostas || ["Escreva a resposta com uma frase completa:"];
+
+  if (problema.ops === 1) {
+    passosHtml += passoAlternativas(numeroPasso, "O que precisamos descobrir?");
+    numeroPasso++;
+    passosHtml += passoOperacao(numeroPasso);
+    numeroPasso++;
+    passosHtml += passoResposta(null, respostas, problema.justificativa);
+  } else {
+    for (let i = 0; i < problema.ops; i++) {
+      passosHtml += passoAlternativas(numeroPasso, titulos[i] || `O que aconteceu (parte ${i+1})?`);
+      numeroPasso++;
+      passosHtml += passoOperacao(numeroPasso);
+      numeroPasso++;
+    }
+    passosHtml += passoResposta(numeroPasso, respostas, problema.justificativa);
+  }
+
+  return `
+  <div class="folha">
+    <div class="cabecalho">
+      <h1>✅ FAÇA ASSIM</h1>
+      <div class="info">MATEMÁTICA — DIVISÃO</div>
+    </div>
+    <div class="ref">${problema.ref}</div>
+    ${passosHtml}
+  </div>`;
+}
+
+document.getElementById('folhas').innerHTML = problemas.map(gerarFolha).join('');
+</script>
+
+</body>
+</html>
